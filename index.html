@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Filtro de Produtos Automotivos</title>
+    <style>
+        /* Estilização básica */
+        body { font-family: Arial, sans-serif; }
+        .filter-container { max-width: 600px; margin: auto; padding: 20px; }
+        .filter-item { margin-bottom: 10px; }
+        .result { font-weight: bold; margin-top: 20px; color: green; }
+    </style>
+</head>
+<body>
+
+<div class="filter-container">
+    <h2>Filtre o modelo de seu carro para descobrir qual jogo de palhetas comprar</h2>
+    
+    <!-- Campo para a marca -->
+    <div class="filter-item">
+        <label for="marca">Marca do Carro:</label>
+        <select id="marca">
+            <option value="">Selecione a Marca</option>
+            <option value="Alfa Romeo">Alfa Romeo</option>
+            <option value="Asia Motors">Asia Motors</option>
+            <option value="AUDI">AUDI</option>
+			<option value="BMW">BMW</option>
+			<option value="BYD">BYD</option>
+			<option value="Cherry">Cherry</option>
+			<option value="Chevrolet">Chevrolet</option>
+			<option value="Chrysler">Chrysler</option>
+			<option value="Ctroen">Ctroen</option>
+			<option value="Daihatsu">Daihatsu</option>
+			<option value="Daewoo">Daewoo</option>
+			<option value="Dodge">Dodge</option>
+			<option value="Ferrari">Ferrari</option>
+			<option value="Fiat">Fiat</option>
+			<option value="Ford">Ford</option>
+			<option value="Geely">Geely</option>
+			<option value="Honda">Honda</option>
+			<option value="Hyundai">Hyundai</option>
+			<option value="Iveco">Iveco</option>
+			<option value="Jac">Jac</option>
+			<option value="Jaguar">Jaguar</option>
+			<option value="Jeep">Jeep</option>
+			<option value="Kia">Kia</option>
+			<option value="Lamborghini">Lamborghini</option>
+			<option value="Land Rover">Land Rover</option>
+			<option value="Lexus">Lexus</option>
+			<option value="Lifan">Lifan</option>
+			<option value="Mclaren">Mclaren</option>
+			<option value="Mercedes Benz">Mercedes Benz</option>
+			<option value="Mini">Mini</option>
+			<option value="Mitsubish">Mitsubish</option>
+			<option value="Nissan">Nissan</option>
+			<option value="Peugeot">Peugeot</option>
+			<option value="Porsche">Porsche</option>
+			<option value="Renault">Renault</option>
+			<option value="Seat">Seat</option>
+			<option value="Smart">Smart</option>
+			<option value="Ssangyong">Ssangyong</option>
+			<option value="Subaru">Subaru</option>
+			<option value="Suzuki">Suzuki</option>
+			<option value="Tesla">Tesla</option>
+			<option value="Toyota">Toyota</option>
+			<option value="Troller">Troller</option>
+			<option value="Volkswagen">Volkswagen</option>
+			<option value="Volvo">Volvo</option>
+            <!-- Outras marcas podem ser adicionadas -->
+        </select>
+    </div>
+    
+    <!-- Campo para o modelo -->
+    <div class="filter-item">
+        <label for="modelo">Modelo do Carro:</label>
+        <select id="modelo">
+            <option value="">Selecione o Modelo</option>
+        </select>
+    </div>
+    
+    <!-- Campo para faixa de ano -->
+    <div class="filter-item">
+        <label for="ano">Ano do Carro:</label>
+        <select id="ano">
+            <option value="">Selecione o Ano</option>
+        </select>
+    </div>
+    
+    <button onclick="filtrarEspecificacoes()">Buscar Especificações</button>
+    
+    <!-- Exibição do resultado -->
+    <div id="resultado" class="result"></div>
+</div>
+
+<script>
+    // Definindo a lista de especificações com chaves corretas para cada objeto
+    const especificacoes = [
+        { "marca": "Alfa Romeo", "modelo": "146", "ano": "1997-1998", "encaixe": "A", "motorista": 22, "carona": 18 },
+        { "marca": "Alfa Romeo", "modelo": "147", "ano": "2000-2003", "encaixe": "A", "motorista": 22, "carona": 16 },
+        { "marca": "Asia Motors", "modelo": "Carnival", "ano": "1998-2003", "encaixe": "A", "motorista": 24, "carona": 24 },
+        { "marca": "AUDI", "modelo": "A1", "ano": "2010-→", "encaixe": "G", "motorista": 24, "carona": 14 },
+{ "marca": "AUDI", "modelo": "A3", "ano": "1996-2006", "encaixe": "A", "motorista": 20, "carona": 18 },
+{ "marca": "AUDI", "modelo": "A3", "ano": "2007-2012", "encaixe": "B", "motorista": 24, "carona": 18 },
+{ "marca": "AUDI", "modelo": "A3 Hatch", "ano": "2013-→", "encaixe": "G", "motorista": 26, "carona": 18 },
+{ "marca": "AUDI", "modelo": "A3 Sedan", "ano": "2014-2020", "encaixe": "G", "motorista": 26, "carona": 18 },
+{ "marca": "AUDI", "modelo": "A4", "ano": "1994-2004", "encaixe": "A", "motorista": 20, "carona": 20 },
+{ "marca": "AUDI", "modelo": "A4", "ano": "2009-→", "encaixe": "G", "motorista": 24, "carona": 18 },
+{ "marca": "AUDI", "modelo": "A4 Avant", "ano": "2009-→", "encaixe": "G", "motorista": 24, "carona": 18 },
+{ "marca": "AUDI", "modelo": "A5", "ano": "2009-→", "encaixe": "G", "motorista": 24, "carona": 18 },
+{ "marca": "AUDI", "modelo": "A6", "ano": "1994-1997", "encaixe": "A", "motorista": 20, "carona": 22 },
+{ "marca": "AUDI", "modelo": "A6", "ano": "2013-→", "encaixe": "G", "motorista": 26, "carona": 20 },
+{ "marca": "AUDI", "modelo": "A6 Avant Allroad", "ano": "2000-2000", "encaixe": "A", "motorista": 22, "carona": 20 },
+{ "marca": "AUDI", "modelo": "A7", "ano": "2012-→", "encaixe": "G", "motorista": 24, "carona": 20 },
+{ "marca": "AUDI", "modelo": "A8", "ano": "1994-2002", "encaixe": "A", "motorista": 20, "carona": 22 },
+{ "marca": "AUDI", "modelo": "Coupé", "ano": "1988-1995", "encaixe": "A", "motorista": 22, "carona": 20 },
+{ "marca": "AUDI", "modelo": "E-tron", "ano": "2021-→", "encaixe": "G", "motorista": 26, "carona": 18 },
+{ "marca": "AUDI", "modelo": "E-tron GT", "ano": "2023-→", "encaixe": "G", "motorista": 26, "carona": 18 },
+{ "marca": "AUDI", "modelo": "Q3", "ano": "2011-→", "encaixe": "G", "motorista": 24, "carona": 20 },
+{ "marca": "AUDI", "modelo": "Q5", "ano": "2011-→", "encaixe": "G", "motorista": 24, "carona": 18 },
+{ "marca": "AUDI", "modelo": "Q7", "ano": "2012-2015", "encaixe": "B", "motorista": 26, "carona": 26 },
+{ "marca": "AUDI", "modelo": "Q7", "ano": "2016-→", "encaixe": "G", "motorista": 26, "carona": 18 },
+{ "marca": "AUDI", "modelo": "Q8", "ano": "2020-→", "encaixe": "G", "motorista": 26, "carona": 18 },
+{ "marca": "AUDI", "modelo": "RS5", "ano": "2019-→", "encaixe": "G", "motorista": 24, "carona": 18 },
+{ "marca": "AUDI", "modelo": "RS6 Aavant", "ano": "2002-2004", "encaixe": "A", "motorista": 22, "carona": 20 },
+{ "marca": "AUDI", "modelo": "S4", "ano": "1997-2001", "encaixe": "A", "motorista": 20, "carona": 20 },
+{ "marca": "AUDI", "modelo": "S4 Avant", "ano": "1997-2001", "encaixe": "A", "motorista": 20, "carona": 20 },
+{ "marca": "AUDI", "modelo": "S8", "ano": "1996-2003", "encaixe": "A", "motorista": 22, "carona": 20 },
+{ "marca": "AUDI", "modelo": "TT", "ano": "2008-2014", "encaixe": "B", "motorista": 22, "carona": 20 },
+{ "marca": "AUDI", "modelo": "TT", "ano": "2015-→", "encaixe": "G", "motorista": 24, "carona": 20 },
+{ "marca": "AUDI", "modelo": "TT Coupé", "ano": "1998-2005", "encaixe": "A", "motorista": 22, "carona": 20 },
+{ "marca": "BMW", "modelo": "IX3", "ano": "2022-→", "encaixe": "K", "motorista": 26, "carona": 20 },
+{ "marca": "BMW", "modelo": "M2", "ano": "2017-2020", "encaixe": "B", "motorista": 22, "carona": 18 },
+{ "marca": "BMW", "modelo": "Série 1", "ano": "2008-2019", "encaixe": "B", "motorista": 22, "carona": 16 },
+{ "marca": "BMW", "modelo": "Série 3", "ano": "1998-2001", "encaixe": "A", "motorista": 22, "carona": 20 },
+{ "marca": "BMW", "modelo": "Série 3", "ano": "2007-2009", "encaixe": "E", "motorista": 24, "carona": 16 },
+{ "marca": "BMW", "modelo": "Série 3", "ano": "2010-→", "encaixe": "B", "motorista": 24, "carona": 18 },
+{ "marca": "BMW", "modelo": "Série 4", "ano": "2015-→", "encaixe": "B", "motorista": 24, "carona": 18 },
+{ "marca": "BMW", "modelo": "Série 5", "ano": "2017-2019", "encaixe": "G", "motorista": 26, "carona": 22 },
+{ "marca": "BMW", "modelo": "Série 5", "ano": "2020-→", "encaixe": "G", "motorista": 26, "carona": 18 },
+{ "marca": "BMW", "modelo": "Série 6", "ano": "2012-→", "encaixe": "E", "motorista": 26, "carona": 17 },
+{ "marca": "BMW", "modelo": "Série Z", "ano": "1995-1999", "encaixe": "A", "motorista": 20, "carona": 20 },
+{ "marca": "BMW", "modelo": "X1", "ano": "2011-2014", "encaixe": "B", "motorista": 24, "carona": 18 },
+{ "marca": "BMW", "modelo": "X1", "ano": "2015-→", "encaixe": "G", "motorista": 26, "carona": 16 },
+{ "marca": "BMW", "modelo": "X2", "ano": "2018-→", "encaixe": "1", "motorista": 24, "carona": 20 },
+{ "marca": "BMW", "modelo": "X3", "ano": "2011-2017", "encaixe": "E", "motorista": 26, "carona": 18 },
+{ "marca": "BMW", "modelo": "X3", "ano": "2018-→", "encaixe": "K", "motorista": 26, "carona": 20 },
+{ "marca": "BMW", "modelo": "X4", "ano": "2015-2018", "encaixe": "E", "motorista": 26, "carona": 18 },
+{ "marca": "BMW", "modelo": "X4", "ano": "2019-2021", "encaixe": "K", "motorista": 26, "carona": 20 },
+{ "marca": "BMW", "modelo": "×5", "ano": "2008-→", "encaixe": "E", "motorista": 24, "carona": 18 },
+{ "marca": "BMW", "modelo": "X6", "ano": "2010-2012", "encaixe": "E", "motorista": 24, "carona": 18 },
+{ "marca": "BMW", "modelo": "X6", "ano": "2013-2014", "encaixe": "F", "motorista": 24, "carona": 20 },
+{ "marca": "BMW", "modelo": "X6", "ano": "2015-2019", "encaixe": "A", "motorista": 24, "carona": 20 },
+{ "marca": "BMW", "modelo": "X6", "ano": "2020-→", "encaixe": "F", "motorista": 26, "carona": 20 },
+{ "marca": "BYD", "modelo": "D1 EV", "ano": "2022-→", "encaixe": "F", "motorista": 26, "carona": 16 },
+{ "marca": "BYD", "modelo": "Dolphin", "ano": "2023-→", "encaixe": "F", "motorista": 26, "carona": 14 },
+{ "marca": "BYD", "modelo": "eT3", "ano": "2022-→", "encaixe": "A", "motorista": 22, "carona": 14 },
+{ "marca": "BYD", "modelo": "Hen EV", "ano": "2022-→", "encaixe": "F", "motorista": 26, "carona": 18 },
+{ "marca": "BYD", "modelo": "Song Plus DM-i", "ano": "2022-→", "encaixe": "F", "motorista": 24, "carona": 16 },
+{ "marca": "BYD", "modelo": "Seal", "ano": "2023-→", "encaixe": "G", "motorista": 24, "carona": 18 },
+{ "marca": "BYD", "modelo": "Tan EV", "ano": "2022-→", "encaixe": "F", "motorista": 26, "carona": 16 },
+{ "marca": "BYD", "modelo": "Yuan Plus EV", "ano": "2022-→", "encaixe": "F", "motorista": 24, "carona": 16 },
+{ "marca": "Cherry", "modelo": "Arrizo", "ano": "2018-→", "encaixe": "F", "motorista": 24, "carona": 16 },
+{ "marca": "Cherry", "modelo": "Celer", "ano": "2013-2018", "encaixe": "A", "motorista": 20, "carona": 16 },
+{ "marca": "Cherry", "modelo": "Cielo", "ano": "2009-2012", "encaixe": "A", "motorista": 20, "carona": 18 },
+{ "marca": "Cherry", "modelo": "Face", "ano": "2009-2013", "encaixe": "A", "motorista": 22, "carona": 16 },
+{ "marca": "Cherry", "modelo": "QQ", "ano": "2009-2013", "encaixe": "A", "motorista": 20, "carona": 16 },
+{ "marca": "Cherry", "modelo": "QQ", "ano": "2009-→", "encaixe": "A", "motorista": 20, "carona": 14 },
+{ "marca": "Cherry", "modelo": "S18", "ano": "2012-→", "encaixe": "A", "motorista": 22, "carona": 16 },
+{ "marca": "Cherry", "modelo": "Tiggo", "ano": "2009-2015", "encaixe": "A", "motorista": 24, "carona": 18 },
+{ "marca": "Cherry", "modelo": "Tiggo 2", "ano": "2018-→", "encaixe": "A", "motorista": 20, "carona": 16 },
+{ "marca": "Cherry", "modelo": "Tiggo 3X Pro", "ano": "2021-→", "encaixe": "A", "motorista": 22, "carona": 16 },
+{ "marca": "Cherry", "modelo": "Tiggo 5X", "ano": "2021-→", "encaixe": "F", "motorista": 22, "carona": 16 },
+{ "marca": "Cherry", "modelo": "Tiggo 7X", "ano": "2018-→", "encaixe": "F", "motorista": 22, "carona": 16 },
+{ "marca": "Cherry", "modelo": "Tiggo 7 Pro", "ano": "2022-→", "encaixe": "A", "motorista": 22, "carona": 16 },
+{ "marca": "Cherry", "modelo": "Tiggo 8", "ano": "2022-→", "encaixe": "F", "motorista": 22, "carona": 16 },
+{ "marca": "Chevrolet", "modelo": "Agile", "ano": "2008-2011", "encaixe": "A", "motorista": 20, "carona": 18 },
+{ "marca": "Chevrolet", "modelo": "Agile", "ano": "2012-2014", "encaixe": "C", "motorista": 20, "carona": 18 },
+{ "marca": "Chevrolet", "modelo": "Astra", "ano": "1994-1996", "encaixe": "A", "motorista": 18, "carona": 18 },
+{ "marca": "Chevrolet", "modelo": "Astra", "ano": "1998-2011", "encaixe": "A", "motorista": 20, "carona": 18 },
+{ "marca": "Chevrolet", "modelo": "Blazer", "ano": "1995-→", "encaixe": "A", "motorista": 20, "carona": 20 },
+{ "marca": "Chevrolet", "modelo": "Calibra", "ano": "1990-1997", "encaixe": "A", "motorista": 18, "carona": 18 },
+{ "marca": "Chevrolet", "modelo": "Camaro", "ano": "2010-→", "encaixe": "A", "motorista": 24, "carona": 20 },
+{ "marca": "Chevrolet", "modelo": "Captiva", "ano": "2009-2017", "encaixe": "A", "motorista": 24, "carona": 16 },
+{ "marca": "Chevrolet", "modelo": "Caravan", "ano": "1976-1988", "encaixe": "A", "motorista": 16, "carona": 16 },
+{ "marca": "Chevrolet", "modelo": "Caravan", "ano": "1989-1992", "encaixe": "A", "motorista": 14, "carona": 14 },
+{ "marca": "Chevrolet", "modelo": "Celta", "ano": "2000-2003", "encaixe": "A", "motorista": 18, "carona": 18 },
+{ "marca": "Chevrolet", "modelo": "Celta", "ano": "2004-2016", "encaixe": "A", "motorista": 18, "carona": 18 },
+{ "marca": "Chevrolet", "modelo": "Chevette", "ano": "1973-1992", "encaixe": "A", "motorista": 16, "carona": 16 },
+{ "marca": "Chevrolet", "modelo": "Chevy", "ano": "1985-1995", "encaixe": "A", "motorista": 16, "carona": 16 },
+{ "marca": "Chevrolet", "modelo": "Classic", "ano": "1995-2014", "encaixe": "A", "motorista": 18, "carona": 18 },
+{ "marca": "Chevrolet", "modelo": "Cobalt", "ano": "2011-→", "encaixe": "A", "motorista": 26, "carona": 16 },
+{ "marca": "Chevrolet", "modelo": "Corsa", "ano": "1994-2001", "encaixe": "A", "motorista": 18, "carona": 18 },
+{ "marca": "Chevrolet", "modelo": "Corsa", "ano": "2002-2012", "encaixe": "A", "motorista": 20, "carona": 18 },
+{ "marca": "Chevrolet", "modelo": "Cruze", "ano": "2012-2016", "encaixe": "A", "motorista": 24, "carona": 18 },
+{ "marca": "Chevrolet", "modelo": "Cruze", "ano": "2017-→", "encaixe": "F", "motorista": 26, "carona": 24 },
+{ "marca": "Chevrolet", "modelo": "Cruze Sedan", "ano": "2020-→", "encaixe": "F", "motorista": 26, "carona": 24 },
+{ "marca": "Chevrolet", "modelo": "D-20", "ano": "1985-1997", "encaixe": "A", "motorista": 16, "carona": 16 },
+{ "marca": "Chevrolet", "modelo": "Equinox", "ano": "2018-2021", "encaixe": "A", "motorista": 24, "carona": 18 },
+{ "marca": "Chevrolet", "modelo": "Equinox", "ano": "2022-→", "encaixe": "A", "motorista": 24, "carona": 18 },
+{ "marca": "Chevrolet", "modelo": "Ipanema", "ano": "1990-1998", "encaixe": "A", "motorista": 18, "carona": 18 },
+{ "marca": "Chevrolet", "modelo": "Kadet", "ano": "1989-1998", "encaixe": "A", "motorista": 18, "carona": 18 },
+{ "marca": "Chevrolet", "modelo": "Malibu", "ano": "2010-2013", "encaixe": "F", "motorista": 24, "carona": 20 },
+{ "marca": "Chevrolet", "modelo": "Marajó", "ano": "1984-1989", "encaixe": "A", "motorista": 16, "carona": 16 },
+{ "marca": "Chevrolet", "modelo": "Meriva", "ano": "2002-2012", "encaixe": "A", "motorista": 24, "carona": 24 },
+{ "marca": "Chevrolet", "modelo": "Montana", "ano": "2003-2010", "encaixe": "A", "motorista": 20, "carona": 18 },
+{ "marca": "Chevrolet", "modelo": "Montana", "ano": "2011-2019", "encaixe": "C", "motorista": 20, "carona": 18 },
+{ "marca": "Chevrolet", "modelo": "Montana", "ano": "2020-2022", "encaixe": "F", "motorista": 20, "carona": 16 },
+{ "marca": "Chevrolet", "modelo": "Montana", "ano": "2023-→", "encaixe": "F", "motorista": 24, "carona": 16 },
+{ "marca": "Chevrolet", "modelo": "Monza", "ano": "1982-1996", "encaixe": "A", "motorista": 18, "carona": 18 },
+{ "marca": "Chevrolet", "modelo": "Omega", "ano": "1992-1998", "encaixe": "A", "motorista": 18, "carona": 18 },
+{ "marca": "Chevrolet", "modelo": "Omega Imp.", "ano": "1998-2006", "encaixe": "A", "motorista": 22, "carona": 20 },
+{ "marca": "Chevrolet", "modelo": "Omega Imp.", "ano": "2007-2013", "encaixe": "B", "motorista": 26, "carona": 14 },
+{ "marca": "Chevrolet", "modelo": "Omega Suprema", "ano": "1992-1998", "encaixe": "A", "motorista": 19, "carona": 19 },
+{ "marca": "Chevrolet", "modelo": "Onix", "ano": "2012-2018", "encaixe": "C", "motorista": 24, "carona": 14 },
+{ "marca": "Chevrolet", "modelo": "Onix Joy/Plus", "ano": "2019-→", "encaixe": "F", "motorista": 24, "carona": 14 },
+{ "marca": "Chevrolet", "modelo": "Novo Onix/Plus", "ano": "2020-→", "encaixe": "F", "motorista": 24, "carona": 16 },
+{ "marca": "Chevrolet", "modelo": "Opala", "ano": "1973-1988", "encaixe": "A", "motorista": 16, "carona": 16 },
+{ "marca": "Chevrolet", "modelo": "Opala", "ano": "1989-1992", "encaixe": "A", "motorista": 14, "carona": 14 },
+{ "marca": "Chevrolet", "modelo": "Prisma", "ano": "2007-2012", "encaixe": "A", "motorista": 18, "carona": 18 },
+{ "marca": "Chevrolet", "modelo": "Prisma", "ano": "2013-2018", "encaixe": "C", "motorista": 24, "carona": 14 },
+{ "marca": "Chevrolet", "modelo": "S10", "ano": "1995-2011", "encaixe": "A", "motorista": 20, "carona": 20 },
+{ "marca": "Chevrolet", "modelo": "S10", "ano": "2012-2019", "encaixe": "C", "motorista": 22, "carona": 18 },
+{ "marca": "Chevrolet", "modelo": "S10", "ano": "2020-→", "encaixe": "F", "motorista": 22, "carona": 16 },
+{ "marca": "Chevrolet", "modelo": "Silverado", "ano": "1997-2002", "encaixe": "A", "motorista": 18, "carona": 18 },
+{ "marca": "Chevrolet", "modelo": "Sonic", "ano": "2012-2014", "encaixe": "B", "motorista": 26, "carona": 14 },
+{ "marca": "Chevrolet", "modelo": "Spin", "ano": "2012-2022", "encaixe": "A", "motorista": 22, "carona": 18 },
+{ "marca": "Chevrolet", "modelo": "Spin", "ano": "2022-→", "encaixe": "F", "motorista": 22, "carona": 18 },
+{ "marca": "Chevrolet", "modelo": "Tigra", "ano": "1994-2000", "encaixe": "A", "motorista": 18, "carona": 18 },
+{ "marca": "Chevrolet", "modelo": "Tracker", "ano": "2000-2009", "encaixe": "A", "motorista": 18, "carona": 18 },
+{ "marca": "Chevrolet", "modelo": "Tracker", "ano": "2013-2019", "encaixe": "F", "motorista": 26, "carona": 14 },
+{ "marca": "Chevrolet", "modelo": "Tracker", "ano": "2020-→", "encaixe": "F", "motorista": 24, "carona": 16 },
+{ "marca": "Chevrolet", "modelo": "Trail Blazer", "ano": "2012-2019", "encaixe": "C", "motorista": 22, "carona": 18 },
+{ "marca": "Chevrolet", "modelo": "Trail Blazer", "ano": "2020-→", "encaixe": "F", "motorista": 22, "carona": 16 },
+{ "marca": "Chevrolet", "modelo": "Vectra", "ano": "1997-2006", "encaixe": "A", "motorista": 18, "carona": 18 },
+{ "marca": "Chevrolet", "modelo": "Vectra", "ano": "2006-2007", "encaixe": "A", "motorista": 22, "carona": 18 },
+{ "marca": "Chevrolet", "modelo": "Vectra", "ano": "2008-2011", "encaixe": "E", "motorista": 22, "carona": 16 },
+{ "marca": "Chevrolet", "modelo": "Vectra GT", "ano": "2007-2011", "encaixe": "E", "motorista": 22, "carona": 16 },
+{ "marca": "Chevrolet", "modelo": "Veraneio", "ano": "1973-1988", "encaixe": "A", "motorista": 16, "carona": 16 },
+{ "marca": "Chevrolet", "modelo": "Veraneio", "ano": "1989-1995", "encaixe": "A", "motorista": 16, "carona": 16 },
+{ "marca": "Chevrolet", "modelo": "Zafira", "ano": "2001-2012", "encaixe": "A", "motorista": 24, "carona": 24 },
+{ "marca": "Chrysler", "modelo": "300 C", "ano": "2007-2016", "encaixe": "A", "motorista": 24, "carona": 20 },
+{ "marca": "Chrysler", "modelo": "300 M", "ano": "1998-2001", "encaixe": "A", "motorista": 24, "carona": 20 },
+{ "marca": "Chrysler", "modelo": "Caravan", "ano": "1996-1999", "encaixe": "A", "motorista": 26, "carona": 26 },
+{ "marca": "Chrysler", "modelo": "Neon", "ano": "1999-2002", "encaixe": "A", "motorista": 20, "carona": 18 },
+{ "marca": "Chrysler", "modelo": "Pacifica", "ano": "2021-→", "encaixe": "A", "motorista": 26, "carona": 20 },
+{ "marca": "Chrysler", "modelo": "PT Cruiser", "ano": "2000-2010", "encaixe": "A", "motorista": 20, "carona": 20 },
+{ "marca": "Chrysler", "modelo": "Stratus", "ano": "1995-2001", "encaixe": "A", "motorista": 22, "carona": 22 },
+{ "marca": "Chrysler", "modelo": "Sebring", "ano": "2000-2006", "encaixe": "A", "motorista": 22, "carona": 20 },
+{ "marca": "Chrysler", "modelo": "Sebring", "ano": "2007-→", "encaixe": "A", "motorista": 24, "carona": 20 },
+{ "marca": "Chrysler", "modelo": "Town & Contry 2008", "ano": "2008-2015", "encaixe": "A", "motorista": 26, "carona": 20 },
+{ "marca": "Chrysler", "modelo": "Voyager", "ano": "1995-2008", "encaixe": "A", "motorista": 26, "carona": 26 },
+{ "marca": "Chrysler", "modelo": "Voyager", "ano": "2009-→", "encaixe": "A", "motorista": 26, "carona": 20 },
+{ "marca": "Ctroen", "modelo": "Aircross", "ano": "2009-2016", "encaixe": "F", "motorista": 24, "carona": 14 },
+{ "marca": "Ctroen", "modelo": "Aircross", "ano": "2017-→", "encaixe": "D", "motorista": 24, "carona": 16 },
+{ "marca": "Ctroen", "modelo": "Berlingo", "ano": "1999-→", "encaixe": "A", "motorista": 22, "carona": 22 },
+{ "marca": "Ctroen", "modelo": "C3", "ano": "2005-2011", "encaixe": "A", "motorista": 24, "carona": 18 },
+{ "marca": "Ctroen", "modelo": "C3", "ano": "2012-2022", "encaixe": "D", "motorista": 24, "carona": 16 },
+{ "marca": "Ctroen", "modelo": "C3 Picasso", "ano": "2012-2015", "encaixe": "F", "motorista": 24, "carona": 14 },
+{ "marca": "Ctroen", "modelo": "C4", "ano": "2007-2012", "encaixe": "B", "motorista": 28, "carona": 24 },
+{ "marca": "Ctroen", "modelo": "C4 Cactus", "ano": "2019-→", "encaixe": "D", "motorista": 24, "carona": 18 },
+{ "marca": "Ctroen", "modelo": "C4 Lounge", "ano": "2013-→", "encaixe": "F", "motorista": 30, "carona": 26 },
+{ "marca": "Ctroen", "modelo": "C4 Pallas", "ano": "2008-2013", "encaixe": "B", "motorista": 28, "carona": 24 },
+{ "marca": "Ctroen", "modelo": "C5", "ano": "2008-2012", "encaixe": "B", "motorista": 28, "carona": 24 },
+{ "marca": "Ctroen", "modelo": "DS3", "ano": "2012-2017", "encaixe": "D", "motorista": 24, "carona": 16 },
+{ "marca": "Ctroen", "modelo": "DS4", "ano": "2012-2016", "encaixe": "F", "motorista": 30, "carona": 26 },
+{ "marca": "Ctroen", "modelo": "DS5", "ano": "2012-2018", "encaixe": "F", "motorista": 30, "carona": 26 },
+{ "marca": "Ctroen", "modelo": "Jumper", "ano": "2011-2017", "encaixe": "A", "motorista": 22, "carona": 22 },
+{ "marca": "Ctroen", "modelo": "Jumper", "ano": "2018-→", "encaixe": "D", "motorista": 24, "carona": 20 },
+{ "marca": "Ctroen", "modelo": "Jumpy", "ano": "2020-→", "encaixe": "D", "motorista": 24, "carona": 20 },
+{ "marca": "Ctroen", "modelo": "Saxo", "ano": "1996-2000", "encaixe": "A", "motorista": 20, "carona": 18 },
+{ "marca": "Ctroen", "modelo": "Xantia", "ano": "1993-2001", "encaixe": "A", "motorista": 22, "carona": 18 },
+{ "marca": "Ctroen", "modelo": "Xsara", "ano": "1997-2001", "encaixe": "A", "motorista": 22, "carona": 20 },
+{ "marca": "Ctroen", "modelo": "Xsara Picasso", "ano": "2000-2005", "encaixe": "A", "motorista": 26, "carona": 26 },
+{ "marca": "Daihatsu", "modelo": "Charade", "ano": "1994-1995", "encaixe": "A", "motorista": 18, "carona": 18 },
+{ "marca": "Daihatsu", "modelo": "Cuore", "ano": "1995-1999", "encaixe": "A", "motorista": 18, "carona": 16 },
+{ "marca": "Daihatsu", "modelo": "Feroza", "ano": "1994-1997", "encaixe": "A", "motorista": 16, "carona": 16 },
+{ "marca": "Daihatsu", "modelo": "Terios", "ano": "1997-1999", "encaixe": "A", "motorista": 20, "carona": 14 },
+{ "marca": "Daewoo", "modelo": "Lanos", "ano": "1997-2003", "encaixe": "A", "motorista": 18, "carona": 18 },
+{ "marca": "Daewoo", "modelo": "Leganza", "ano": "1997-2002", "encaixe": "A", "motorista": 22, "carona": 20 },
+{ "marca": "Dodge", "modelo": "Challenger", "ano": "2015-→", "encaixe": "A", "motorista": 22, "carona": 22 },
+{ "marca": "Dodge", "modelo": "Dakota", "ano": "1997-2001", "encaixe": "A", "motorista": 20, "carona": 20 },
+{ "marca": "Dodge", "modelo": "Durango Citadel", "ano": "2013-→", "encaixe": "A", "motorista": 22, "carona": 20 },
+{ "marca": "Dodge", "modelo": "Journey", "ano": "2011-→", "encaixe": "A", "motorista": 24, "carona": 18 },
+{ "marca": "Dodge", "modelo": "Magnun", "ano": "2004-2008", "encaixe": "A", "motorista": 22, "carona": 20 },
+{ "marca": "Dodge", "modelo": "Nitro", "ano": "2006-2011", "encaixe": "A", "motorista": 18, "carona": 18 },
+{ "marca": "Dodge", "modelo": "Ram", "ano": "1994-2008", "encaixe": "A", "motorista": 20, "carona": 20 },
+{ "marca": "Dodge", "modelo": "Ram", "ano": "2009-2018", "encaixe": "A", "motorista": 22, "carona": 22 },
+{ "marca": "Dodge", "modelo": "Ram 1500", "ano": "2021-→", "encaixe": "A", "motorista": 22, "carona": 22 },
+{ "marca": "Dodge", "modelo": "Ram 2500", "ano": "2019-→", "encaixe": "A", "motorista": 22, "carona": 22 },
+{ "marca": "Dodge", "modelo": "Ram 3500", "ano": "2022-→", "encaixe": "A", "motorista": 22, "carona": 22 },
+{ "marca": "Ferrari", "modelo": "360 Moderna F1", "ano": "2004-→", "encaixe": "A", "motorista": 22, "carona": 20 },
+{ "marca": "Ferrari", "modelo": "458 Itália", "ano": "2013-→", "encaixe": "A", "motorista": 26, "carona": 20 },
+{ "marca": "Ferrari", "modelo": "California", "ano": "2012-→", "encaixe": "A", "motorista": 26, "carona": 16 },
+{ "marca": "Ferrari", "modelo": "F355 Berlinetta", "ano": "1994-1998", "encaixe": "A", "motorista": 20, "carona": 20 },
+{ "marca": "Ferrari", "modelo": "Spider 430", "ano": "2006-→", "encaixe": "A", "motorista": 24, "carona": 20 },
+{ "marca": "Fiat", "modelo": "147", "ano": "1985-1988", "encaixe": "A", "motorista": 14, "carona": 14 },
+{ "marca": "Fiat", "modelo": "500", "ano": "2010-→", "encaixe": "A", "motorista": 24, "carona": 14 },
+{ "marca": "Fiat", "modelo": "500 Imp", "ano": "2010-→", "encaixe": "F", "motorista": 24, "carona": 14 },
+{ "marca": "Fiat", "modelo": "Argo", "ano": "2018-→", "encaixe": "B", "motorista": 24, "carona": 14 },
+{ "marca": "Fiat", "modelo": "Brava", "ano": "1998-2004", "encaixe": "A", "motorista": 22, "carona": 18 },
+{ "marca": "Fiat", "modelo": "Bravo", "ano": "2010-2016", "encaixe": "F", "motorista": 24, "carona": 16 },
+{ "marca": "Fiat", "modelo": "Coupé", "ano": "1994-1996", "encaixe": "A", "motorista": 20, "carona": 18 },
+{ "marca": "Fiat", "modelo": "Cronos", "ano": "2018-→", "encaixe": "B", "motorista": 24, "carona": 16 },
+{ "marca": "Fiat", "modelo": "Dobló", "ano": "2001-→", "encaixe": "A", "motorista": 22, "carona": 18 },
+{ "marca": "Fiat", "modelo": "Ducato", "ano": "1997-2017", "encaixe": "A", "motorista": 22, "carona": 22 },
+{ "marca": "Fiat", "modelo": "Ducato", "ano": "2018-→", "encaixe": "A", "motorista": 26, "carona": 22 },
+{ "marca": "Fiat", "modelo": "Elba", "ano": "1988-1996", "encaixe": "A", "motorista": 16, "carona": 0 },
+{ "marca": "Fiat", "modelo": "Fiorino", "ano": "1987-2013", "encaixe": "A", "motorista": 16, "carona": 0 },
+{ "marca": "Fiat", "modelo": "Fiorino", "ano": "2014-2021", "encaixe": "A", "motorista": 24, "carona": 16 },
+{ "marca": "Fiat", "modelo": "Fiorino", "ano": "2022-→", "encaixe": "D", "motorista": 24, "carona": 16 },
+{ "marca": "Fiat", "modelo": "Fremont", "ano": "2011-→", "encaixe": "A", "motorista": 22, "carona": 18 },
+{ "marca": "Fiat", "modelo": "Fastback", "ano": "2022-→", "encaixe": "D", "motorista": 24, "carona": 16 },
+{ "marca": "Fiat", "modelo": "Grand Siena", "ano": "2012-2020", "encaixe": "F", "motorista": 24, "carona": 16 },
+{ "marca": "Fiat", "modelo": "Idea", "ano": "2005-2010", "encaixe": "A", "motorista": 24, "carona": 14 },
+{ "marca": "Fiat", "modelo": "Idea", "ano": "2011-2016", "encaixe": "C ", "motorista": 24, "carona": 14 },
+{ "marca": "Fiat", "modelo": "Linea", "ano": "2007-2016", "encaixe": "B", "motorista": 26, "carona": 14 },
+{ "marca": "Fiat", "modelo": "Marea", "ano": "1996-2007", "encaixe": "A", "motorista": 22, "carona": 18 },
+{ "marca": "Fiat", "modelo": "Mobi", "ano": "2016-2019", "encaixe": "A", "motorista": 24, "carona": 16 },
+{ "marca": "Fiat", "modelo": "Mobi", "ano": "2020-→", "encaixe": "D", "motorista": 22, "carona": 16 },
+{ "marca": "Fiat", "modelo": "Palio", "ano": "1996-2011", "encaixe": "A", "motorista": 22, "carona": 16 },
+{ "marca": "Fiat", "modelo": "Novo Palio", "ano": "2012-2016", "encaixe": "F", "motorista": 24, "carona": 16 },
+{ "marca": "Fiat", "modelo": "Novo Palio", "ano": "2017-→", "encaixe": "F", "motorista": 24, "carona": 16 },
+{ "marca": "Fiat", "modelo": "Palio Weekend ", "ano": "2000-2007", "encaixe": "A", "motorista": 22, "carona": 16 },
+{ "marca": "Fiat", "modelo": "Palio Weekend ", "ano": "2008-2016", "encaixe": "A", "motorista": 22, "carona": 16 },
+{ "marca": "Fiat", "modelo": "Palio Weekend ", "ano": "2017-→", "encaixe": "A", "motorista": 22, "carona": 16 },
+{ "marca": "Fiat", "modelo": "Panorama", "ano": "1983-1986", "encaixe": "A", "motorista": 16, "carona": 16 },
+{ "marca": "Fiat", "modelo": "Prêmio", "ano": "1985-1994", "encaixe": "A", "motorista": 16, "carona": 0 },
+{ "marca": "Fiat", "modelo": "Pulse", "ano": "2021-→", "encaixe": "B", "motorista": 24, "carona": 16 },
+{ "marca": "Fiat", "modelo": "Punto", "ano": "2007-2017", "encaixe": "B", "motorista": 26, "carona": 14 },
+{ "marca": "Fiat", "modelo": "Siena", "ano": "1996-2016", "encaixe": "A", "motorista": 22, "carona": 16 },
+{ "marca": "Fiat", "modelo": "Siena", "ano": "2012-→", "encaixe": "A", "motorista": 22, "carona": 16 },
+{ "marca": "Fiat", "modelo": "Stilo", "ano": "2005-2011", "encaixe": "A", "motorista": 22, "carona": 18 },
+{ "marca": "Fiat", "modelo": "Strada", "ano": "1996-2020", "encaixe": "A", "motorista": 22, "carona": 16 },
+{ "marca": "Fiat", "modelo": "Strada", "ano": "2021-→", "encaixe": "D", "motorista": 24, "carona": 16 },
+{ "marca": "Fiat", "modelo": "Scudo", "ano": "2022-→", "encaixe": "D", "motorista": 21, "carona": 20 },
+{ "marca": "Fiat", "modelo": "Tempra/SW", "ano": "1994-1997", "encaixe": "A", "motorista": 20, "carona": 20 },
+{ "marca": "Fiat", "modelo": "Tipo", "ano": "1993-1997", "encaixe": "A", "motorista": 20, "carona": 20 },
+{ "marca": "Fiat", "modelo": "Toro ", "ano": "2016-→", "encaixe": "A", "motorista": 24, "carona": 18 },
+{ "marca": "Fiat", "modelo": "Tipo", "ano": "1984-2013", "encaixe": "A", "motorista": 16, "carona": 0 },
+{ "marca": "Fiat", "modelo": "Uno", "ano": "2009-2020", "encaixe": "A", "motorista": 24, "carona": 16 },
+{ "marca": "Fiat", "modelo": "Uno", "ano": "2015-2020", "encaixe": "B", "motorista": 24, "carona": 16 },
+{ "marca": "Ford", "modelo": "Corcel", "ano": "1985-1986", "encaixe": "A", "motorista": 18, "carona": 18 },
+{ "marca": "Ford", "modelo": "Courier", "ano": "1997-2013", "encaixe": "A", "motorista": 18, "carona": 18 },
+{ "marca": "Ford", "modelo": "Belina", "ano": "1985-1986", "encaixe": "A", "motorista": 16, "carona": 16 },
+{ "marca": "Ford", "modelo": "Bronco Sport", "ano": "2021-→", "encaixe": "F", "motorista": 22, "carona": 20 },
+{ "marca": "Ford", "modelo": "DelRey", "ano": "1985-1991", "encaixe": "A", "motorista": 16, "carona": 16 },
+{ "marca": "Ford", "modelo": "Ecosport", "ano": "2006-2012", "encaixe": "A", "motorista": 22, "carona": 18 },
+{ "marca": "Ford", "modelo": "Ecosport", "ano": "2013-2017", "encaixe": "c", "motorista": 22, "carona": 14 },
+{ "marca": "Ford", "modelo": "Ecosport", "ano": "2018-→", "encaixe": "A", "motorista": 22, "carona": 16 },
+{ "marca": "Ford", "modelo": "Edge", "ano": "201O-2016", "encaixe": "A", "motorista": 26, "carona": 20 },
+{ "marca": "Ford", "modelo": "Edge", "ano": "2017-2018", "encaixe": "F", "motorista": 26, "carona": 26 },
+{ "marca": "Ford", "modelo": "Escort", "ano": "1983-1996", "encaixe": "A", "motorista": 18, "carona": 18 },
+{ "marca": "Ford", "modelo": "Escort Zetec", "ano": "1997-2001", "encaixe": "A", "motorista": 20, "carona": 20 },
+{ "marca": "Ford", "modelo": "Explorer", "ano": "1991-2000", "encaixe": "A", "motorista": 18, "carona": 18 },
+{ "marca": "Ford", "modelo": "F-1000", "ano": "1992-1998", "encaixe": "A", "motorista": 18, "carona": 18 },
+{ "marca": "Ford", "modelo": "F-4000", "ano": "1992-1998", "encaixe": "A", "motorista": 18, "carona": 18 },
+{ "marca": "Ford", "modelo": "F150", "ano": "2012-→", "encaixe": "A", "motorista": 22, "carona": 22 },
+{ "marca": "Ford", "modelo": "F250", "ano": "1998-2012", "encaixe": "A", "motorista": 22, "carona": 22 },
+{ "marca": "Ford", "modelo": "F350", "ano": "1998-2015", "encaixe": "A", "motorista": 22, "carona": 22 },
+{ "marca": "Ford", "modelo": "Fiesta", "ano": "1996-2004", "encaixe": "A", "motorista": 18, "carona": 18 },
+{ "marca": "Ford", "modelo": "Fiesta", "ano": "2005-2010", "encaixe": "A", "motorista": 20, "carona": 16 },
+{ "marca": "Ford", "modelo": "Fiesta", "ano": "2011-2014", "encaixe": "B", "motorista": 20, "carona": 16 },
+{ "marca": "Ford", "modelo": "Fiesta New", "ano": "2011-→", "encaixe": "F", "motorista": 24, "carona": 16 },
+{ "marca": "Ford", "modelo": "Focus", "ano": "2000-2007", "encaixe": "A", "motorista": 22, "carona": 18 },
+{ "marca": "Ford", "modelo": "Focus", "ano": "2008-2013", "encaixe": "E", "motorista": 26, "carona": 16 },
+{ "marca": "Ford", "modelo": "Focus", "ano": "2014-2019", "encaixe": "F", "motorista": 28, "carona": 28 },
+{ "marca": "Ford", "modelo": "Fusion", "ano": "2009-2012", "encaixe": "A", "motorista": 24, "carona": 18 },
+{ "marca": "Ford", "modelo": "Fusion", "ano": "2013-→", "encaixe": "B", "motorista": 26, "carona": 26 },
+{ "marca": "Ford", "modelo": "Ka", "ano": "1997-2009", "encaixe": "A", "motorista": 18, "carona": 16 },
+{ "marca": "Ford", "modelo": "Ka", "ano": "2010-2013", "encaixe": "c", "motorista": 18, "carona": 16 },
+{ "marca": "Ford", "modelo": "Ka 4 Portas", "ano": "2014-→", "encaixe": "C", "motorista": 22, "carona": 14 },
+{ "marca": "Ford", "modelo": "Mondeo", "ano": "1993-2001", "encaixe": "A", "motorista": 20, "carona": 20 },
+{ "marca": "Ford", "modelo": "Mondeo", "ano": "2002-2005", "encaixe": "A", "motorista": 22, "carona": 20 },
+{ "marca": "Ford", "modelo": "Mustang", "ano": "2018-→", "encaixe": "B", "motorista": 22, "carona": 20 },
+{ "marca": "Ford", "modelo": "Maverick", "ano": "1973-1985", "encaixe": "A", "motorista": 16, "carona": 16 },
+{ "marca": "Ford", "modelo": "Maverick", "ano": "2022-→", "encaixe": "G", "motorista": 24, "carona": 20 },
+{ "marca": "Ford", "modelo": "Pampa", "ano": "1983-1997", "encaixe": "A", "motorista": 16, "carona": 16 },
+{ "marca": "Ford", "modelo": "Ranger", "ano": "1993-2011", "encaixe": "A", "motorista": 18, "carona": 18 },
+{ "marca": "Ford", "modelo": "Ranger", "ano": "2012-2016", "encaixe": "A", "motorista": 24, "carona": 16 },
+{ "marca": "Ford", "modelo": "Ranger", "ano": "2017-→", "encaixe": "F", "motorista": 24, "carona": 16 },
+{ "marca": "Ford", "modelo": "Territory", "ano": "2021-→", "encaixe": "A", "motorista": 22, "carona": 18 },
+{ "marca": "Ford", "modelo": "Transit", "ano": "2008-→", "encaixe": "A", "motorista": 22, "carona": 22 },
+{ "marca": "Ford", "modelo": "Verona", "ano": "1990-1996", "encaixe": "A", "motorista": 18, "carona": 18 },
+{ "marca": "Geely", "modelo": "EC7", "ano": "2014-2014", "encaixe": "A", "motorista": 24, "carona": 16 },
+{ "marca": "Geely", "modelo": "GC2", "ano": "2014-2015", "encaixe": "A", "motorista": 25, "carona": 0 },
+{ "marca": "Honda", "modelo": "Accord", "ano": "1990-1997", "encaixe": "A", "motorista": 22, "carona": 20 },
+{ "marca": "Honda", "modelo": "Accord", "ano": "1998-2002", "encaixe": "A", "motorista": 22, "carona": 18 },
+{ "marca": "Honda", "modelo": "Accord", "ano": "2007-2012", "encaixe": "A", "motorista": 26, "carona": 16 },
+{ "marca": "Honda", "modelo": "Accord", "ano": "2013-2017", "encaixe": "A", "motorista": 26, "carona": 18 },
+{ "marca": "Honda", "modelo": "City", "ano": "2010-2014", "encaixe": "F", "motorista": 24, "carona": 14 },
+{ "marca": "Honda", "modelo": "City", "ano": "2015-2017", "encaixe": "A", "motorista": 24, "carona": 14 },
+{ "marca": "Honda", "modelo": "City", "ano": "2018-2021", "encaixe": "F", "motorista": 24, "carona": 14 },
+{ "marca": "Honda", "modelo": "New City", "ano": "2022-→", "encaixe": "A", "motorista": 24, "carona": 14 },
+{ "marca": "Honda", "modelo": "New City Hatchback", "ano": "2022-→", "encaixe": "A", "motorista": 24, "carona": 14 },
+{ "marca": "Honda", "modelo": "Civic", "ano": "1991-2000", "encaixe": "A", "motorista": 20, "carona": 18 },
+{ "marca": "Honda", "modelo": "Civic", "ano": "2000-2005", "encaixe": "A", "motorista": 20, "carona": 18 },
+{ "marca": "Honda", "modelo": "Civic", "ano": "2006-2011", "encaixe": "F", "motorista": 26, "carona": 24 },
+{ "marca": "Honda", "modelo": "Civic", "ano": "2012-2016", "encaixe": "A", "motorista": 26, "carona": 22 },
+{ "marca": "Honda", "modelo": "Civic", "ano": "2017-→", "encaixe": "F", "motorista": 24, "carona": 16 },
+{ "marca": "Honda", "modelo": "CR-V", "ano": "2008-2012", "encaixe": "A", "motorista": 26, "carona": 16 },
+{ "marca": "Honda", "modelo": "CR-V", "ano": "2013-2016", "encaixe": "A", "motorista": 26, "carona": 16 },
+{ "marca": "Honda", "modelo": "CR-V", "ano": "2017-2019", "encaixe": "A", "motorista": 26, "carona": 16 },
+{ "marca": "Honda", "modelo": "CR-V", "ano": "2020-→", "encaixe": "A", "motorista": 26, "carona": 16 },
+{ "marca": "Honda", "modelo": "Fit", "ano": "2003-2008", "encaixe": "A", "motorista": 22, "carona": 16 },
+{ "marca": "Honda", "modelo": "Fit", "ano": "2009-2014", "encaixe": "F", "motorista": 26, "carona": 14 },
+{ "marca": "Honda", "modelo": "Fit", "ano": "2015-2017", "encaixe": "A", "motorista": 24, "carona": 14 },
+{ "marca": "Honda", "modelo": "Fit", "ano": "2018-→", "encaixe": "F", "motorista": 24, "carona": 14 },
+{ "marca": "Honda", "modelo": "HR-V", "ano": "2015-2017", "encaixe": "A", "motorista": 24, "carona": 14 },
+{ "marca": "Honda", "modelo": "HR-V", "ano": "2018-2018", "encaixe": "A", "motorista": 24, "carona": 14 },
+{ "marca": "Honda", "modelo": "New HR-V", "ano": "2023-→", "encaixe": "A", "motorista": 22, "carona": 18 },
+{ "marca": "Honda", "modelo": "WR-V", "ano": "2017-2020", "encaixe": "A", "motorista": 26, "carona": 14 },
+{ "marca": "Honda", "modelo": "WR-V", "ano": "2021-→", "encaixe": "F", "motorista": 26, "carona": 14 },
+{ "marca": "Hyundai", "modelo": "Azera", "ano": "2008-2011", "encaixe": "A", "motorista": 24, "carona": 20 },
+{ "marca": "Hyundai", "modelo": "Azera", "ano": "2012-2019", "encaixe": "A", "motorista": 26, "carona": 18 },
+{ "marca": "Hyundai", "modelo": "Creta", "ano": "2017-2020", "encaixe": "A", "motorista": 26, "carona": 16 },
+{ "marca": "Hyundai", "modelo": "Creta", "ano": "2021-→", "encaixe": "A", "motorista": 24, "carona": 16 },
+{ "marca": "Hyundai", "modelo": "Elantra", "ano": "2011-2016", "encaixe": "A", "motorista": 26, "carona": 14 },
+{ "marca": "Hyundai", "modelo": "Elantra", "ano": "2017-→", "encaixe": "A", "motorista": 26, "carona": 16 },
+{ "marca": "Hyundai", "modelo": "Galloper ", "ano": "1995-1999", "encaixe": "A", "motorista": 16, "carona": 16 },
+{ "marca": "Hyundai", "modelo": "Genesis", "ano": "2013-→", "encaixe": "A", "motorista": 24, "carona": 2020 },
+{ "marca": "Hyundai", "modelo": "HB20", "ano": "2013-2019", "encaixe": "A", "motorista": 24, "carona": 16 },
+{ "marca": "Hyundai", "modelo": "HB20", "ano": "2020-→", "encaixe": "B", "motorista": 26, "carona": 14 },
+{ "marca": "Hyundai", "modelo": "HB20 S", "ano": "2020-→", "encaixe": "V", "motorista": 26, "carona": 14 },
+{ "marca": "Hyundai", "modelo": "HR", "ano": "2007-→", "encaixe": "A", "motorista": 20, "carona": 18 },
+{ "marca": "Hyundai", "modelo": "I30", "ano": "2008-2012", "encaixe": "A", "motorista": 24, "carona": 18 },
+{ "marca": "Hyundai", "modelo": "I30", "ano": "2013-2016", "encaixe": "A", "motorista": 26, "carona": 14 },
+{ "marca": "Hyundai", "modelo": "IX35", "ano": "2008-→", "encaixe": "A", "motorista": 24, "carona": 16 },
+{ "marca": "Hyundai", "modelo": "Santa Fé", "ano": "2008-2013", "encaixe": "A", "motorista": 22, "carona": 18 },
+{ "marca": "Hyundai", "modelo": "Santa Fé", "ano": "2014-2019", "encaixe": "A", "motorista": 26, "carona": 14 },
+{ "marca": "Hyundai", "modelo": "Santa Fé", "ano": "2020-→", "encaixe": "A", "motorista": 26, "carona": 14 },
+{ "marca": "Hyundai", "modelo": "Sonata", "ano": "2010-2014", "encaixe": "A", "motorista": 26, "carona": 18 },
+{ "marca": "Hyundai", "modelo": "Terracam", "ano": "2001-2006", "encaixe": "A", "motorista": 22, "carona": 20 },
+{ "marca": "Hyundai", "modelo": "Tucson", "ano": "2008-2016", "encaixe": "A", "motorista": 22, "carona": 16 },
+{ "marca": "Hyundai", "modelo": "Tucson", "ano": "2017-→", "encaixe": "A", "motorista": 26, "carona": 16 },
+{ "marca": "Hyundai", "modelo": "Veloster", "ano": "2011-2013", "encaixe": "A", "motorista": 26, "carona": 18 },
+{ "marca": "Hyundai", "modelo": "Vera Cruz", "ano": "2008-2012", "encaixe": "F", "motorista": 24, "carona": 18 },
+{ "marca": "Iveco", "modelo": "Daily", "ano": "1997-2001", "encaixe": "A", "motorista": 22, "carona": 22 },
+{ "marca": "Iveco", "modelo": "Daily", "ano": "2002-2020", "encaixe": "A", "motorista": 24, "carona": 24 },
+{ "marca": "Iveco", "modelo": "Daily", "ano": "2021-→", "encaixe": "B", "motorista": 24, "carona": 24 },
+{ "marca": "Jac", "modelo": "E-J7", "ano": "2022-→", "encaixe": "F", "motorista": 24, "carona": 16 },
+{ "marca": "Jac", "modelo": "E-JS1", "ano": "2022-→", "encaixe": "F", "motorista": 22, "carona": 16 },
+{ "marca": "Jac", "modelo": "E-JS4", "ano": "2022-→", "encaixe": "F", "motorista": 24, "carona": 16 },
+{ "marca": "Jac", "modelo": "IEV40", "ano": "2019-→", "encaixe": "F", "motorista": 22, "carona": 16 },
+{ "marca": "Jac", "modelo": "J2", "ano": "2012-2016", "encaixe": "A", "motorista": 24, "carona": 0 },
+{ "marca": "Jac", "modelo": "J3", "ano": "2010-2015", "encaixe": "A", "motorista": 22, "carona": 16 },
+{ "marca": "Jac", "modelo": "J5", "ano": "2012-2014", "encaixe": "A", "motorista": 22, "carona": 18 },
+{ "marca": "Jac", "modelo": "J3", "ano": "2015-2016", "encaixe": "F", "motorista": 22, "carona": 16 },
+{ "marca": "Jac", "modelo": "J6", "ano": "2010-2016", "encaixe": "A", "motorista": 24, "carona": 16 },
+{ "marca": "Jac", "modelo": "J8", "ano": "2015-→", "encaixe": "A", "motorista": 26, "carona": 20 },
+{ "marca": "Jac", "modelo": "T5", "ano": "2016-→", "encaixe": "F", "motorista": 22, "carona": 14 },
+{ "marca": "Jac", "modelo": "T6", "ano": "2014-→", "encaixe": "A", "motorista": 24, "carona": 16 },
+{ "marca": "Jac", "modelo": "T8", "ano": "2014-→", "encaixe": "A", "motorista": 26, "carona": 20 },
+{ "marca": "Jac", "modelo": "T40", "ano": "2017-→", "encaixe": "F", "motorista": 22, "carona": 16 },
+{ "marca": "Jac", "modelo": "T50", "ano": "2018-→", "encaixe": "F", "motorista": 22, "carona": 14 },
+{ "marca": "Jac", "modelo": "T60", "ano": "2019-→", "encaixe": "F", "motorista": 24, "carona": 14 },
+{ "marca": "Jac", "modelo": "T80", "ano": "2018-→", "encaixe": "F", "motorista": 24, "carona": 16 },
+{ "marca": "Jaguar", "modelo": "E-Pace", "ano": "2019-→", "encaixe": "K", "motorista": 24, "carona": 20 },
+{ "marca": "Jaguar", "modelo": "F-Pace", "ano": "2018-→", "encaixe": "F", "motorista": 26, "carona": 18 },
+{ "marca": "Jaguar", "modelo": "F-Type", "ano": "2020-→", "encaixe": "A", "motorista": 22, "carona": 20 },
+{ "marca": "Jaguar", "modelo": "1-Pace", "ano": "2020-→", "encaixe": "G", "motorista": 26, "carona": 18 },
+{ "marca": "Jaguar", "modelo": "XE", "ano": "2015-→", "encaixe": "F", "motorista": 26, "carona": 16 },
+{ "marca": "Jaguar", "modelo": "XF", "ano": "2014-2014", "encaixe": "A", "motorista": 22, "carona": 18 },
+{ "marca": "Jaguar", "modelo": "XF", "ano": "2015-→", "encaixe": "B", "motorista": 22, "carona": 18 },
+{ "marca": "Jaguar", "modelo": "XJ", "ano": "2017-→", "encaixe": "B", "motorista": 22, "carona": 18 },
+{ "marca": "Jeep", "modelo": "Cherokee", "ano": "1993-1998", "encaixe": "A", "motorista": 18, "carona": 18 },
+{ "marca": "Jeep", "modelo": "Cherokee", "ano": "2015-→", "encaixe": "A", "motorista": 26, "carona": 18 },
+{ "marca": "Jeep", "modelo": "Commander", "ano": "2021-→", "encaixe": "A", "motorista": 24, "carona": 18 },
+{ "marca": "Jeep", "modelo": "Compass", "ano": "2012-2016", "encaixe": "A", "motorista": 22, "carona": 20 },
+{ "marca": "Jeep", "modelo": "Compass", "ano": "2017-→", "encaixe": "A", "motorista": 24, "carona": 18 },
+{ "marca": "Jeep", "modelo": "Grand Cherokee", "ano": "1992-1999", "encaixe": "A", "motorista": 20, "carona": 20 },
+{ "marca": "Jeep", "modelo": "Grand Cherokee", "ano": "2000-2011", "encaixe": "A", "motorista": 20, "carona": 20 },
+{ "marca": "Jeep", "modelo": "Grand Cherokee", "ano": "2012-→", "encaixe": "A", "motorista": 22, "carona": 20 },
+{ "marca": "Jeep", "modelo": "Gladiator", "ano": "2021-→", "encaixe": "A", "motorista": 16, "carona": 16 },
+{ "marca": "Jeep", "modelo": "Renegade*", "ano": "2016-→", "encaixe": "A", "motorista": 22, "carona": 20 },
+{ "marca": "Jeep", "modelo": "Renegade*", "ano": "2016-→", "encaixe": "F", "motorista": 22, "carona": 20 },
+{ "marca": "Jeep", "modelo": "Wrangler", "ano": "2001-2019", "encaixe": "A", "motorista": 14, "carona": 14 },
+{ "marca": "Jeep", "modelo": "Wrangler", "ano": "2020-→", "encaixe": "A", "motorista": 16, "carona": 16 },
+{ "marca": "Kia", "modelo": "Besta", "ano": "1993-1997", "encaixe": "A", "motorista": 18, "carona": 18 },
+{ "marca": "Kia", "modelo": "Besta", "ano": "1998-2003", "encaixe": "A", "motorista": 20, "carona": 18 },
+{ "marca": "Kia", "modelo": "Besta", "ano": "2005-→", "encaixe": "A", "motorista": 22, "carona": 18 },
+{ "marca": "Kia", "modelo": "Cadenza", "ano": "2010-2016", "encaixe": "A", "motorista": 26, "carona": 18 },
+{ "marca": "Kia", "modelo": "Carens", "ano": "2010-2013", "encaixe": "A", "motorista": 24, "carona": 16 },
+{ "marca": "Kia", "modelo": "Cerato", "ano": "2009-2012", "encaixe": "A", "motorista": 24, "carona": 20 },
+{ "marca": "Kia", "modelo": "Cerato", "ano": "2013-2019", "encaixe": "A", "motorista": 26, "carona": 14 },
+{ "marca": "Kia", "modelo": "Cerato", "ano": "2020-→", "encaixe": "A", "motorista": 26, "carona": 16 },
+{ "marca": "Kia", "modelo": "Carnival", "ano": "2022-→", "encaixe": "A", "motorista": 26, "carona": 20 },
+{ "marca": "Kia", "modelo": "Mohave", "ano": "2009-2017", "encaixe": "A", "motorista": 24, "carona": 20 },
+{ "marca": "Kia", "modelo": "Niro", "ano": "2022-→", "encaixe": "A", "motorista": 26, "carona": 16 },
+{ "marca": "Kia", "modelo": "Optima", "ano": "2012-2016", "encaixe": "A", "motorista": 24, "carona": 18 },
+{ "marca": "Kia", "modelo": "Picanto", "ano": "2009-2018", "encaixe": "A", "motorista": 22, "carona": 16 },
+{ "marca": "Kia", "modelo": "Rio", "ano": "2020-→", "encaixe": "A", "motorista": 24, "carona": 16 },
+{ "marca": "Kia", "modelo": "Sorento", "ano": "2007-2009", "encaixe": "A", "motorista": 24, "carona": 18 },
+{ "marca": "Kia", "modelo": "Sorento", "ano": "201O-2016", "encaixe": "A", "motorista": 24, "carona": 20 },
+{ "marca": "Kia", "modelo": "Sorento", "ano": "2017-→", "encaixe": "A", "motorista": 24, "carona": 16 },
+{ "marca": "Kia", "modelo": "Soul", "ano": "2009-→", "encaixe": "A", "motorista": 24, "carona": 20 },
+{ "marca": "Kia", "modelo": "Sportage", "ano": "1993-2003", "encaixe": "A", "motorista": 20, "carona": 20 },
+{ "marca": "Kia", "modelo": "Sportage", "ano": "2006-2010", "encaixe": "A", "motorista": 24, "carona": 16 },
+{ "marca": "Kia", "modelo": "Sportage", "ano": "2011-2016", "encaixe": "A", "motorista": 24, "carona": 18 },
+{ "marca": "Kia", "modelo": "Sportage", "ano": "2017-2010", "encaixe": "A", "motorista": 24, "carona": 16 },
+{ "marca": "Kia", "modelo": "Sportage", "ano": "2022-→", "encaixe": "G", "motorista": 26, "carona": 18 },
+{ "marca": "Kia", "modelo": "Stoni c", "ano": "2022-→", "encaixe": "A", "motorista": 26, "carona": 16 },
+{ "marca": "Lamborghini", "modelo": "Aventador S", "ano": "2018-→", "encaixe": "G", "motorista": 26, "carona": 24 },
+{ "marca": "Lamborghini", "modelo": "Huracán", "ano": "2015-→", "encaixe": "G", "motorista": 26, "carona": 16 },
+{ "marca": "Lamborghini", "modelo": "Urus", "ano": "2019-→", "encaixe": "G", "motorista": 26, "carona": 18 },
+{ "marca": "Land Rover", "modelo": "Di scovery", "ano": "2005-2018", "encaixe": "A", "motorista": 22, "carona": 22 },
+{ "marca": "Land Rover", "modelo": "Discovery", "ano": "2019-→", "encaixe": "K", "motorista": 24, "carona": 20 },
+{ "marca": "Land Rover", "modelo": "Discovery Sport", "ano": "2015-→", "encaixe": "A", "motorista": 24, "carona": 20 },
+{ "marca": "Land Rover", "modelo": "Discovery ", "ano": "2019-→", "encaixe": "G", "motorista": 22, "carona": 22 },
+{ "marca": "Land Rover", "modelo": "Evoque", "ano": "2012-2018", "encaixe": "F", "motorista": 24, "carona": 20 },
+{ "marca": "Land Rover", "modelo": "Evoque", "ano": "2019-→", "encaixe": "G", "motorista": 26, "carona": 20 },
+{ "marca": "Land Rover", "modelo": "Freelander", "ano": "2007-2015", "encaixe": "B", "motorista": 24, "carona": 20 },
+{ "marca": "Land Rover", "modelo": "Range R. Sport ", "ano": "2005-2013", "encaixe": "A", "motorista": 22, "carona": 22 },
+{ "marca": "Land Rover", "modelo": "Range R.Sport ", "ano": "2014-2016", "encaixe": "A", "motorista": 24, "carona": 20 },
+{ "marca": "Land Rover", "modelo": "Range R. Sport", "ano": "2017-→", "encaixe": "K", "motorista": 24, "carona": 20 },
+{ "marca": "Land Rover", "modelo": "Range R. Vogue", "ano": "2011-2015", "encaixe": "A", "motorista": 24, "carona": 20 },
+{ "marca": "Land Rover", "modelo": "Range R. Vogue", "ano": "2016-→", "encaixe": "K", "motorista": 24, "carona": 20 },
+{ "marca": "Land Rover", "modelo": "Velar", "ano": "2018-→", "encaixe": "F", "motorista": 26, "carona": 18 },
+{ "marca": "Lexus", "modelo": "CT200h", "ano": "2010-→", "encaixe": "A", "motorista": 26, "carona": 18 },
+{ "marca": "Lexus", "modelo": "ES 300h", "ano": "2015-→", "encaixe": "A", "motorista": 24, "carona": 16 },
+{ "marca": "Lexus", "modelo": "IS 250h", "ano": "2013-2015", "encaixe": "A", "motorista": 24, "carona": 18 },
+{ "marca": "Lexus", "modelo": "NX 300h", "ano": "2017-2020", "encaixe": "K", "motorista": 26, "carona": 16 },
+{ "marca": "Lexus", "modelo": "RX 450h", "ano": "2019-→", "encaixe": "G", "motorista": 26, "carona": 18 },
+{ "marca": "Lexus", "modelo": "ux 250h", "ano": "2019-→", "encaixe": "A", "motorista": 26, "carona": 14 },
+{ "marca": "Lifan", "modelo": "320", "ano": "2009-2012", "encaixe": "A", "motorista": 18, "carona": 18 },
+{ "marca": "Lifan", "modelo": "530", "ano": "2015-→", "encaixe": "A", "motorista": 24, "carona": 14 },
+{ "marca": "Lifan", "modelo": "620", "ano": "2009-2012", "encaixe": "A", "motorista": 24, "carona": 16 },
+{ "marca": "Lifan", "modelo": "Foison", "ano": "2014-2016", "encaixe": "A", "motorista": 16, "carona": 16 },
+{ "marca": "Lifan", "modelo": "X60", "ano": "2013-→", "encaixe": "A", "motorista": 22, "carona": 16 },
+{ "marca": "Lifan", "modelo": "X80", "ano": "2019-→", "encaixe": "A", "motorista": 26, "carona": 18 },
+{ "marca": "Mclaren", "modelo": "5705", "ano": "2018-→", "encaixe": "E", "motorista": 26, "carona": 0 },
+{ "marca": "Mclaren", "modelo": "5705", "ano": "2018-→", "encaixe": "E", "motorista": 0, "carona": 14 },
+{ "marca": "Mercedes Benz", "modelo": "CLA", "ano": "2013-2015", "encaixe": "B", "motorista": 24, "carona": 18 },
+{ "marca": "Mercedes Benz", "modelo": "CLA", "ano": "2016-→", "encaixe": "I", "motorista": 24, "carona": 18 },
+{ "marca": "Mercedes Benz", "modelo": "CLS", "ano": "2020-→", "encaixe": "I", "motorista": 24, "carona": 20 },
+{ "marca": "Mercedes Benz", "modelo": "Classe A", "ano": "1999-2006", "encaixe": "A", "motorista": 26, "carona": 24 },
+{ "marca": "Mercedes Benz", "modelo": "Classe A", "ano": "2013-2014", "encaixe": "B", "motorista": 24, "carona": 18 },
+{ "marca": "Mercedes Benz", "modelo": "Classe A", "ano": "2015-→", "encaixe": "I", "motorista": 24, "carona": 18 },
+{ "marca": "Mercedes Benz", "modelo": "Classe B  ", "ano": "2008-2015", "encaixe": "B", "motorista": 26, "carona": 22 },
+{ "marca": "Mercedes Benz", "modelo": "Classe C", "ano": "2011-2013", "encaixe": "H", "motorista": 24, "carona": 24 },
+{ "marca": "Mercedes Benz", "modelo": "Classe C", "ano": "2014-2015", "encaixe": "B", "motorista": 22, "carona": 22 },
+{ "marca": "Mercedes Benz", "modelo": "Classe C", "ano": "2016-2021", "encaixe": "I", "motorista": 20, "carona": 20 },
+{ "marca": "Mercedes Benz", "modelo": "Classe E", "ano": "2011-2014", "encaixe": "H", "motorista": 24, "carona": 24 },
+{ "marca": "Mercedes Benz", "modelo": "Classe E", "ano": "2015-→", "encaixe": "I", "motorista": 24, "carona": 20 },
+{ "marca": "Mercedes Benz", "modelo": "Classe E Cabrio", "ano": "2018-→", "encaixe": "I", "motorista": 24, "carona": 21 },
+{ "marca": "Mercedes Benz", "modelo": "Classe G", "ano": "2015-→", "encaixe": "A", "motorista": 16, "carona": 16 },
+{ "marca": "Mercedes Benz", "modelo": "GLA", "ano": "2014-2015", "encaixe": "B", "motorista": 24, "carona": 18 },
+{ "marca": "Mercedes Benz", "modelo": "GLA", "ano": "2016-→", "encaixe": "I", "motorista": 24, "carona": 18 },
+{ "marca": "Mercedes Benz", "modelo": "GLB", "ano": "2020-→", "encaixe": "I", "motorista": 24, "carona": 20 },
+{ "marca": "Mercedes Benz", "modelo": "GLC", "ano": "2016-→", "encaixe": "I", "motorista": 20, "carona": 20 },
+{ "marca": "Mercedes Benz", "modelo": "ML", "ano": "2008-2011", "encaixe": "B", "motorista": 28, "carona": 20 },
+{ "marca": "Mercedes Benz", "modelo": "ML", "ano": "2012-→", "encaixe": "F", "motorista": 24, "carona": 22 },
+{ "marca": "Mercedes Benz", "modelo": "SLC", "ano": "2018-→", "encaixe": "B", "motorista": 22, "carona": 22 },
+{ "marca": "Mercedes Benz", "modelo": "SLK", "ano": "201O-→", "encaixe": "B", "motorista": 22, "carona": 22 },
+{ "marca": "Mercedes Benz", "modelo": "Sprinter", "ano": "1995-2012", "encaixe": "A", "motorista": 22, "carona": 22 },
+{ "marca": "Mercedes Benz", "modelo": "Sprinter", "ano": "2013-2019", "encaixe": "B", "motorista": 26, "carona": 24 },
+{ "marca": "Mercedes Benz", "modelo": "Sprinter", "ano": "2020-→", "encaixe": "I", "motorista": 24, "carona": 24 },
+{ "marca": "Mini", "modelo": "Cooper Country/ Pace", "ano": "2013-2017", "encaixe": "B", "motorista": 18, "carona": 20 },
+{ "marca": "Mini", "modelo": "Cooper Countryman", "ano": "2018-→", "encaixe": "J", "motorista": 24, "carona": 20 },
+{ "marca": "Mini", "modelo": "Cooper S 2", "ano": "2012-→", "encaixe": "B", "motorista": 20, "carona": 20 },
+{ "marca": "Mini", "modelo": "Cooper S4", "ano": "2012-→", "encaixe": "D", "motorista": 18, "carona": 18 },
+{ "marca": "Mini", "modelo": "One", "ano": "2012-→", "encaixe": "D", "motorista": 18, "carona": 18 },
+{ "marca": "Mini", "modelo": "Works", "ano": "2019-→", "encaixe": "A", "motorista": 18, "carona": 18 },
+{ "marca": "Mitsubish", "modelo": "Aitreck", "ano": "2003-2008", "encaixe": "A", "motorista": 20, "carona": 18 },
+{ "marca": "Mitsubish", "modelo": "ASX", "ano": "2011-→", "encaixe": "A", "motorista": 24, "carona": 20 },
+{ "marca": "Mitsubish", "modelo": "Eclipse", "ano": "1991-1994", "encaixe": "A", "motorista": 20, "carona": 20 },
+{ "marca": "Mitsubish", "modelo": "Eclipse Cross", "ano": "2019-→", "encaixe": "A", "motorista": 24, "carona": 18 },
+{ "marca": "Mitsubish", "modelo": "L200", "ano": "1998-2009", "encaixe": "A", "motorista": 16, "carona": 16 },
+{ "marca": "Mitsubish", "modelo": "L200", "ano": "2010-→", "encaixe": "A", "motorista": 22, "carona": 18 },
+{ "marca": "Mitsubish", "modelo": "Lancer", "ano": "1996-2002", "encaixe": "A", "motorista": 20, "carona": 18 },
+{ "marca": "Mitsubish", "modelo": "Lancer", "ano": "2008-2018", "encaixe": "A", "motorista": 24, "carona": 16 },
+{ "marca": "Mitsubish", "modelo": "Outlander", "ano": "2008-2013", "encaixe": "A", "motorista": 24, "carona": 20 },
+{ "marca": "Mitsubish", "modelo": "Outlander", "ano": "2014-→", "encaixe": "A", "motorista": 26, "carona": 18 },
+{ "marca": "Mitsubish", "modelo": "Outlander Sport", "ano": "2021-→", "encaixe": "A", "motorista": 24, "carona": 20 },
+{ "marca": "Mitsubish", "modelo": "Pajero", "ano": "1990-2003", "encaixe": "A", "motorista": 18, "carona": 18 },
+{ "marca": "Mitsubish", "modelo": "Pajero Dakar", "ano": "2010-→", "encaixe": "A", "motorista": 22, "carona": 18 },
+{ "marca": "Mitsubish", "modelo": "Pajero Full", "ano": "2002-2007", "encaixe": "A", "motorista": 22, "carona": 20 },
+{ "marca": "Mitsubish", "modelo": "Pajero Full", "ano": "2008-→", "encaixe": "A", "motorista": 22, "carona": 20 },
+{ "marca": "Mitsubish", "modelo": "Pajero Sport", "ano": "1998-2007", "encaixe": "A", "motorista": 20, "carona": 20 },
+{ "marca": "Mitsubish", "modelo": "Pajero Sport", "ano": "2008-2018", "encaixe": "A", "motorista": 20, "carona": 20 },
+{ "marca": "Mitsubish", "modelo": "Pajero Sport", "ano": "2019-→", "encaixe": "A", "motorista": 22, "carona": 18 },
+{ "marca": "Mitsubish", "modelo": "TR4", "ano": "2001-2009", "encaixe": "A", "motorista": 18, "carona": 18 },
+{ "marca": "Mitsubish", "modelo": "TR4", "ano": "2010-2015", "encaixe": "A", "motorista": 18, "carona": 18 },
+{ "marca": "Nissan", "modelo": "Altima", "ano": "2013-2014", "encaixe": "A", "motorista": 26, "carona": 14 },
+{ "marca": "Nissan", "modelo": "Frontier", "ano": "1997-2005", "encaixe": "A", "motorista": 18, "carona": 18 },
+{ "marca": "Nissan", "modelo": "Frontier", "ano": "2006-→", "encaixe": "A", "motorista": 24, "carona": 18 },
+{ "marca": "Nissan", "modelo": "Kicks", "ano": "2017-→", "encaixe": "A", "motorista": 26, "carona": 14 },
+{ "marca": "Nissan", "modelo": "Livina", "ano": "2008-2014", "encaixe": "A", "motorista": 22, "carona": 14 },
+{ "marca": "Nissan", "modelo": "March", "ano": "2011-2019", "encaixe": "A", "motorista": 20, "carona": 14 },
+{ "marca": "Nissan", "modelo": "Sentra", "ano": "2008-2013", "encaixe": "A", "motorista": 26, "carona": 16 },
+{ "marca": "Nissan", "modelo": "Sentra", "ano": "2014-→", "encaixe": "A", "motorista": 28, "carona": 14 },
+{ "marca": "Nissan", "modelo": "Tiida", "ano": "2008-2013", "encaixe": "A", "motorista": 22, "carona": 16 },
+{ "marca": "Nissan", "modelo": "Versa", "ano": "201 1-2020", "encaixe": "A", "motorista": 20, "carona": 14 },
+{ "marca": "Nissan", "modelo": "Versa", "ano": "2021-→", "encaixe": "A", "motorista": 26, "carona": 14 },
+{ "marca": "Nissan", "modelo": "Xterra", "ano": "2006-2008", "encaixe": "A", "motorista": 18, "carona": 14 },
+{ "marca": "Nissan", "modelo": "X-Trai!", "ano": "2005-2009", "encaixe": "A", "motorista": 24, "carona": 16 },
+{ "marca": "Peugeot", "modelo": "206", "ano": "1998-2010", "encaixe": "A", "motorista": 26, "carona": 16 },
+{ "marca": "Peugeot", "modelo": "207", "ano": "2008-2015", "encaixe": "A", "motorista": 24, "carona": 16 },
+{ "marca": "Peugeot", "modelo": "208", "ano": "2012-2018", "encaixe": "B", "motorista": 26, "carona": 16 },
+{ "marca": "Peugeot", "modelo": "208", "ano": "2019-2020", "encaixe": "D", "motorista": 24, "carona": 16 },
+{ "marca": "Peugeot", "modelo": "208", "ano": "2021-→", "encaixe": "F", "motorista": 24, "carona": 16 },
+{ "marca": "Peugeot", "modelo": "307", "ano": "2006-2012", "encaixe": "B", "motorista": 28, "carona": 26 },
+{ "marca": "Peugeot", "modelo": "307 SW", "ano": "2006-2008", "encaixe": "B", "motorista": 28, "carona": 26 },
+{ "marca": "Peugeot", "modelo": "308", "ano": "2012-→", "encaixe": "F", "motorista": 30, "carona": 26 },
+{ "marca": "Peugeot", "modelo": "408", "ano": "2011-→", "encaixe": "F", "motorista": 30, "carona": 26 },
+{ "marca": "Peugeot", "modelo": "2008", "ano": "2014-2019", "encaixe": "B", "motorista": 26, "carona": 16 },
+{ "marca": "Peugeot", "modelo": "2008", "ano": "2020-2021", "encaixe": "D", "motorista": 24, "carona": 16 },
+{ "marca": "Peugeot", "modelo": "3008", "ano": "2018-→", "encaixe": "G", "motorista": 26, "carona": 18 },
+{ "marca": "Peugeot", "modelo": "5008", "ano": "2018-→", "encaixe": "G", "motorista": 26, "carona": 18 },
+{ "marca": "Peugeot", "modelo": "Boxer", "ano": "1998-2017", "encaixe": "A", "motorista": 22, "carona": 22 },
+{ "marca": "Peugeot", "modelo": "Boxer", "ano": "2019-→", "encaixe": "F", "motorista": 26, "carona": 22 },
+{ "marca": "Peugeot", "modelo": "Expert", "ano": "2018-→", "encaixe": "D", "motorista": 24, "carona": 20 },
+{ "marca": "Peugeot", "modelo": "Hoggar", "ano": "2010-2014", "encaixe": "A", "motorista": 24, "carona": 16 },
+{ "marca": "Peugeot", "modelo": "Partner", "ano": "1996-→", "encaixe": "A", "motorista": 22, "carona": 22 },
+{ "marca": "Porsche", "modelo": "718", "ano": "2019-→", "encaixe": "G", "motorista": 22, "carona": 0 },
+{ "marca": "Porsche", "modelo": "911", "ano": "1997-2006", "encaixe": "A", "motorista": 22, "carona": 22 },
+{ "marca": "Porsche", "modelo": "911", "ano": "2011-→", "encaixe": "G", "motorista": 20, "carona": 22 },
+{ "marca": "Porsche", "modelo": "911 Carrera S", "ano": "2017-→", "encaixe": "G", "motorista": 20, "carona": 22 },
+{ "marca": "Porsche", "modelo": "Boxter", "ano": "1996-2008", "encaixe": "A", "motorista": 22, "carona": 22 },
+{ "marca": "Porsche", "modelo": "Boxter", "ano": "2011-→", "encaixe": "G", "motorista": 20, "carona": 22 },
+{ "marca": "Porsche", "modelo": "Cayenne", "ano": "2011-2017", "encaixe": "E", "motorista": 26, "carona": 26 },
+{ "marca": "Porsche", "modelo": "Cayenne", "ano": "2018-2020", "encaixe": "G", "motorista": 26, "carona": 20 },
+{ "marca": "Porsche", "modelo": "Cayman", "ano": "2005-2012", "encaixe": "A", "motorista": 22, "carona": 22 },
+{ "marca": "Porsche", "modelo": "Cayman", "ano": "2013-→", "encaixe": "G", "motorista": 20, "carona": 22 },
+{ "marca": "Porsche", "modelo": "Macan", "ano": "2014-→", "encaixe": "G", "motorista": 24, "carona": 18 },
+{ "marca": "Porsche", "modelo": "Panamera", "ano": "2009-2012", "encaixe": "A", "motorista": 24, "carona": 20 },
+{ "marca": "Porsche", "modelo": "Panamera", "ano": "2013-→", "encaixe": "G", "motorista": 24, "carona": 20 },
+{ "marca": "Porsche", "modelo": "Panamera T.", "ano": "2017-→", "encaixe": "G", "motorista": 24, "carona": 20 },
+{ "marca": "Porsche", "modelo": "Taycan", "ano": "2021-→", "encaixe": "G", "motorista": 26, "carona": 18 },
+{ "marca": "Renault", "modelo": "Captur", "ano": "2017-→", "encaixe": "J", "motorista": 26, "carona": 16 },
+{ "marca": "Renault", "modelo": "Clio", "ano": "1999-2017", "encaixe": "A", "motorista": 20, "carona": 18 },
+{ "marca": "Renault", "modelo": "Duster", "ano": "2011-2019", "encaixe": "A", "motorista": 20, "carona": 20 },
+{ "marca": "Renault", "modelo": "Duster", "ano": "2020-→", "encaixe": "D", "motorista": 22, "carona": 20 },
+{ "marca": "Renault", "modelo": "Fluence", "ano": "2011-2015", "encaixe": "D", "motorista": 24, "carona": 16 },
+{ "marca": "Renault", "modelo": "Fluence", "ano": "2016-2018", "encaixe": "A", "motorista": 24, "carona": 16 },
+{ "marca": "Renault", "modelo": "Grand Scenic", "ano": "2008-2009", "encaixe": "D", "motorista": 24, "carona": 22 },
+{ "marca": "Renault", "modelo": "Kangoo", "ano": "1997-2018", "encaixe": "A", "motorista": 20, "carona": 20 },
+{ "marca": "Renault", "modelo": "Kwid", "ano": "2018-→", "encaixe": "A", "motorista": 22, "carona": 0 },
+{ "marca": "Renault", "modelo": "Laguna", "ano": "1996-2003", "encaixe": "A", "motorista": 24, "carona": 18 },
+{ "marca": "Renault", "modelo": "Logan", "ano": "2008-2012", "encaixe": "A", "motorista": 20, "carona": 20 },
+{ "marca": "Renault", "modelo": "Logan", "ano": "2013-→", "encaixe": "D", "motorista": 22, "carona": 20 },
+{ "marca": "Renault", "modelo": "Master", "ano": "2013-→", "encaixe": "A", "motorista": 26, "carona": 26 },
+{ "marca": "Renault", "modelo": "Megane", "ano": "1996-2005", "encaixe": "A", "motorista": 22, "carona": 20 },
+{ "marca": "Renault", "modelo": "Megane", "ano": "2007-2011", "encaixe": "A", "motorista": 22, "carona": 16 },
+{ "marca": "Renault", "modelo": "Megane G. Tour", "ano": "2007-2013", "encaixe": "A", "motorista": 22, "carona": 16 },
+{ "marca": "Renault", "modelo": "Oroch", "ano": "2015-→", "encaixe": "A", "motorista": 20, "carona": 20 },
+{ "marca": "Renault", "modelo": "Sandero", "ano": "2008-2014", "encaixe": "A", "motorista": 20, "carona": 20 },
+{ "marca": "Renault", "modelo": "Sandero", "ano": "2015-→", "encaixe": "D", "motorista": 22, "carona": 20 },
+{ "marca": "Renault", "modelo": "Sceni c", "ano": "1999-2006", "encaixe": "A", "motorista": 24, "carona": 16 },
+{ "marca": "Renault", "modelo": "Symbol", "ano": "2011-2013", "encaixe": "D", "motorista": 24, "carona": 18 },
+{ "marca": "Seat", "modelo": "Cordoba", "ano": "1995-2002", "encaixe": "A", "motorista": 20, "carona": 18 },
+{ "marca": "Seat", "modelo": "Ibiza", "ano": "1994-2003", "encaixe": "A", "motorista": 20, "carona": 18 },
+{ "marca": "Smart", "modelo": "Fortwo", "ano": "2008-→", "encaixe": "B", "motorista": 22, "carona": 20 },
+{ "marca": "Ssangyong", "modelo": "Actyon", "ano": "2009-→", "encaixe": "A", "motorista": 22, "carona": 18 },
+{ "marca": "Ssangyong", "modelo": "Korando", "ano": "2011-→", "encaixe": "A", "motorista": 24, "carona": 16 },
+{ "marca": "Ssangyong", "modelo": "Kyron", "ano": "2007-2012", "encaixe": "A", "motorista": 22, "carona": 18 },
+{ "marca": "Ssangyong", "modelo": "Rexton", "ano": "2006-2012", "encaixe": "A", "motorista": 22, "carona": 18 },
+{ "marca": "Subaru", "modelo": "Forester", "ano": "2002-2011", "encaixe": "A", "motorista": 20, "carona": 18 },
+{ "marca": "Subaru", "modelo": "Forester", "ano": "2013-→", "encaixe": "A", "motorista": 26, "carona": 16 },
+{ "marca": "Subaru", "modelo": "lmpreza", "ano": "2008-2016", "encaixe": "A", "motorista": 24, "carona": 16 },
+{ "marca": "Subaru", "modelo": "Legacy", "ano": "2011-2015", "encaixe": "A", "motorista": 26, "carona": 18 },
+{ "marca": "Subaru", "modelo": "Outback", "ano": "1997-2002", "encaixe": "A", "motorista": 20, "carona": 18 },
+{ "marca": "Subaru", "modelo": "Outback", "ano": "2015-→", "encaixe": "A", "motorista": 26, "carona": 16 },
+{ "marca": "Subaru", "modelo": "WRX", "ano": "2016-→", "encaixe": "A", "motorista": 26, "carona": 16 },
+{ "marca": "Subaru", "modelo": "XV", "ano": "2014-→", "encaixe": "A", "motorista": 26, "carona": 16 },
+{ "marca": "Suzuki", "modelo": "Grand Vitara", "ano": "2008-2016", "encaixe": "A", "motorista": 24, "carona": 18 },
+{ "marca": "Suzuki", "modelo": "Jimny Sierra", "ano": "2021-→", "encaixe": "A", "motorista": 16, "carona": 16 },
+{ "marca": "Suzuki", "modelo": "Jimny Sport", "ano": "2000-→", "encaixe": "A", "motorista": 18, "carona": 16 },
+{ "marca": "Suzuki", "modelo": "S-Cross", "ano": "2015-2016", "encaixe": "A", "motorista": 26, "carona": 14 },
+{ "marca": "Suzuki", "modelo": "S-Cross", "ano": "2017-→", "encaixe": "A", "motorista": 24, "carona": 16 },
+{ "marca": "Suzuki", "modelo": "Swift Sport", "ano": "2014-2015", "encaixe": "A", "motorista": 22, "carona": 16 },
+{ "marca": "Suzuki", "modelo": "SX4", "ano": "2009-2017", "encaixe": "A", "motorista": 26, "carona": 14 },
+{ "marca": "Suzuki", "modelo": "Vitara", "ano": "2017-2019", "encaixe": "A", "motorista": 24, "carona": 16 },
+{ "marca": "Tesla", "modelo": "Model 3", "ano": "2019-→", "encaixe": "G", "motorista": 26, "carona": 18 },
+{ "marca": "Tesla", "modelo": "ModelY", "ano": "2020-→", "encaixe": "G", "motorista": 26, "carona": 18 },
+{ "marca": "Toyota", "modelo": "Bandeirante", "ano": "2008-2014", "encaixe": "A", "motorista": 20, "carona": 20 },
+{ "marca": "Toyota", "modelo": "Camry", "ano": "2008-2014", "encaixe": "A", "motorista": 24, "carona": 20 },
+{ "marca": "Toyota", "modelo": "Camry", "ano": "2016-→", "encaixe": "A", "motorista": 26, "carona": 20 },
+{ "marca": "Toyota", "modelo": "Corolia", "ano": "2002-2008", "encaixe": "A", "motorista": 24, "carona": 18 },
+{ "marca": "Toyota", "modelo": "Coroll a", "ano": "2009-2014", "encaixe": "A", "motorista": 26, "carona": 16 },
+{ "marca": "Toyota", "modelo": "Corolla", "ano": "2015-→", "encaixe": "A", "motorista": 26, "carona": 14 },
+{ "marca": "Toyota", "modelo": "Corolla Cross", "ano": "2021-→", "encaixe": "A", "motorista": 26, "carona": 16 },
+{ "marca": "Toyota", "modelo": "Etios", "ano": "2012-→", "encaixe": "A", "motorista": 26, "carona": 0 },
+{ "marca": "Toyota", "modelo": "Fielder", "ano": "2005-2008", "encaixe": "A", "motorista": 24, "carona": 18 },
+{ "marca": "Toyota", "modelo": "Hilux", "ano": "1994-2005", "encaixe": "A", "motorista": 16, "carona": 16 },
+{ "marca": "Toyota", "modelo": "Hilux", "ano": "2006-2016", "encaixe": "A", "motorista": 20, "carona": 18 },
+{ "marca": "Toyota", "modelo": "Hilux", "ano": "2017-→", "encaixe": "A", "motorista": 22, "carona": 16 },
+{ "marca": "Toyota", "modelo": "Hilux SW4", "ano": "2006-2016", "encaixe": "A", "motorista": 20, "carona": 18 },
+{ "marca": "Toyota", "modelo": "Hilux SW4", "ano": "2017-→", "encaixe": "A", "motorista": 22, "carona": 16 },
+{ "marca": "Toyota", "modelo": "Prado", "ano": "2002-2009", "encaixe": "A", "motorista": 22, "carona": 18 },
+{ "marca": "Toyota", "modelo": "Prius", "ano": "2013-2015", "encaixe": "A", "motorista": 28, "carona": 16 },
+{ "marca": "Toyota", "modelo": "Prius", "ano": "2017-→", "encaixe": "K", "motorista": 26, "carona": 16 },
+{ "marca": "Toyota", "modelo": "Rav4", "ano": "2007-2013", "encaixe": "A", "motorista": 24, "carona": 16 },
+{ "marca": "Toyota", "modelo": "Rav4", "ano": "2014-2019", "encaixe": "A", "motorista": 26, "carona": 16 },
+{ "marca": "Toyota", "modelo": "Yaris Hatch", "ano": "2019-→", "encaixe": "A", "motorista": 22, "carona": 14 },
+{ "marca": "Toyota", "modelo": "Yaris Sedan", "ano": "2019-→", "encaixe": "A", "motorista": 22, "carona": 14 },
+{ "marca": "Troller", "modelo": "T-4", "ano": "2001-2014", "encaixe": "A", "motorista": 14, "carona": 14 },
+{ "marca": "Troller", "modelo": "T-4", "ano": "2015-→", "encaixe": "c", "motorista": 16, "carona": 16 },
+{ "marca": "Volkswagen", "modelo": "Amarok", "ano": "2010-2013", "encaixe": "A/G", "motorista": 24, "carona": 24 },
+{ "marca": "Volkswagen", "modelo": "Amarok", "ano": "2014-→", "encaixe": "G", "motorista": 24, "carona": 24 },
+{ "marca": "Volkswagen", "modelo": "Apollo", "ano": "1990-1992", "encaixe": "A", "motorista": 18, "carona": 18 },
+{ "marca": "Volkswagen", "modelo": "Brasília", "ano": "1973-1981", "encaixe": "A", "motorista": 18, "carona": 18 },
+{ "marca": "Volkswagen", "modelo": "Bora", "ano": "2000-2010", "encaixe": "A", "motorista": 20, "carona": 18 },
+{ "marca": "Volkswagen", "modelo": "Crossfox", "ano": "2005-2012", "encaixe": "A", "motorista": 22, "carona": 14 },
+{ "marca": "Volkswagen", "modelo": "Crossfox", "ano": "2013-2018", "encaixe": "G", "motorista": 22, "carona": 14 },
+{ "marca": "Volkswagen", "modelo": "Fox", "ano": "2003-2012", "encaixe": "A", "motorista": 22, "carona": 14 },
+{ "marca": "Volkswagen", "modelo": "Fox", "ano": "2013-→", "encaixe": "G", "motorista": 22, "carona": 14 },
+{ "marca": "Volkswagen", "modelo": "Fusca", "ano": "1980-1996", "encaixe": "A", "motorista": 10, "carona": 10 },
+{ "marca": "Volkswagen", "modelo": "Gol", "ano": "1985-1993", "encaixe": "A", "motorista": 16, "carona": 16 },
+{ "marca": "Volkswagen", "modelo": "GolGl", "ano": "1994-1996", "encaixe": "A", "motorista": 16, "carona": 16 },
+{ "marca": "Volkswagen", "modelo": "GolG2", "ano": "1995-1999", "encaixe": "A", "motorista": 20, "carona": 20 },
+{ "marca": "Volkswagen", "modelo": "GolG3", "ano": "1999-2005", "encaixe": "A", "motorista": 20, "carona": 20 },
+{ "marca": "Volkswagen", "modelo": "Gol G4", "ano": "2006-2008", "encaixe": "A", "motorista": 20, "carona": 20 },
+{ "marca": "Volkswagen", "modelo": "GolG5", "ano": "2009-2012", "encaixe": "A", "motorista": 22, "carona": 16 },
+{ "marca": "Volkswagen", "modelo": "Gol G6", "ano": "2013-2016", "encaixe": "G", "motorista": 22, "carona": 16 },
+{ "marca": "Volkswagen", "modelo": "GolG7", "ano": "2017-→", "encaixe": "A/G", "motorista": 22, "carona": 16 },
+{ "marca": "Volkswagen", "modelo": "Golf", "ano": "1993-1998", "encaixe": "A", "motorista": 20, "carona": 18 },
+{ "marca": "Volkswagen", "modelo": "Golf", "ano": "1999-2006", "encaixe": "A", "motorista": 20, "carona": 18 },
+{ "marca": "Volkswagen", "modelo": "Golf", "ano": "2007-2014", "encaixe": "E", "motorista": 20, "carona": 18 },
+{ "marca": "Volkswagen", "modelo": "Golf", "ano": "2015-2019", "encaixe": "G", "motorista": 26, "carona": 18 },
+{ "marca": "Volkswagen", "modelo": "Golf Variant", "ano": "2015-2017", "encaixe": "G", "motorista": 26, "carona": 16 },
+{ "marca": "Volkswagen", "modelo": "Jetta", "ano": "2007-2010", "encaixe": "F", "motorista": 24, "carona": 18 },
+{ "marca": "Volkswagen", "modelo": "Jetta", "ano": "2011-→", "encaixe": "G", "motorista": 24, "carona": 18 },
+{ "marca": "Volkswagen", "modelo": "Jetta Variant", "ano": "2011-2013", "encaixe": "F", "motorista": 24, "carona": 18 },
+{ "marca": "Volkswagen", "modelo": "Kombi", "ano": "1980-1993", "encaixe": "A", "motorista": 16, "carona": 16 },
+{ "marca": "Volkswagen", "modelo": "Kombi", "ano": "1994-2016", "encaixe": "A", "motorista": 16, "carona": 16 },
+{ "marca": "Volkswagen", "modelo": "New Beatle", "ano": "1999-2012", "encaixe": "A", "motorista": 20, "carona": 20 },
+{ "marca": "Volkswagen", "modelo": "Novo Fusca", "ano": "2013-→", "encaixe": "G", "motorista": 22, "carona": 22 },
+{ "marca": "Volkswagen", "modelo": "Nivus", "ano": "2021-→", "encaixe": "G", "motorista": 26, "carona": 18 },
+{ "marca": "Volkswagen", "modelo": "Parati", "ano": "1996-2000", "encaixe": "A", "motorista": 20, "carona": 20 },
+{ "marca": "Volkswagen", "modelo": "Parati", "ano": "2001-2013", "encaixe": "A", "motorista": 20, "carona": 20 },
+{ "marca": "Volkswagen", "modelo": "Passat", "ano": "1976-1989", "encaixe": "A", "motorista": 16, "carona": 16 },
+{ "marca": "Volkswagen", "modelo": "Passat", "ano": "1995-1997", "encaixe": "A", "motorista": 20, "carona": 20 },
+{ "marca": "Volkswagen", "modelo": "Passat", "ano": "1999-2005", "encaixe": "A", "motorista": 20, "carona": 20 },
+{ "marca": "Volkswagen", "modelo": "Passat", "ano": "2005-→", "encaixe": "F", "motorista": 24, "carona": 18 },
+{ "marca": "Volkswagen", "modelo": "Passat Variant", "ano": "2009-→", "encaixe": "G", "motorista": 24, "carona": 18 },
+{ "marca": "Volkswagen", "modelo": "Polo", "ano": "2002-2006", "encaixe": "A", "motorista": 20, "carona": 18 },
+{ "marca": "Volkswagen", "modelo": "Polo", "ano": "2007-2011", "encaixe": "A", "motorista": 20, "carona": 18 },
+{ "marca": "Volkswagen", "modelo": "Polo", "ano": "2012-2014", "encaixe": "F", "motorista": 20, "carona": 18 },
+{ "marca": "Volkswagen", "modelo": "Polo", "ano": "2018-→", "encaixe": "G", "motorista": 26, "carona": 18 },
+{ "marca": "Volkswagen", "modelo": "Santana", "ano": "1990-1997", "encaixe": "A", "motorista": 18, "carona": 18 },
+{ "marca": "Volkswagen", "modelo": "Santana", "ano": "1998-2006", "encaixe": "A", "motorista": 20, "carona": 20 },
+{ "marca": "Volkswagen", "modelo": "Santana Quantum", "ano": "1998-1999", "encaixe": "A", "motorista": 20, "carona": 20 },
+{ "marca": "Volkswagen", "modelo": "Saveiro", "ano": "1985-1993", "encaixe": "A", "motorista": 16, "carona": 16 },
+{ "marca": "Volkswagen", "modelo": "Saveiro", "ano": "1994-1994", "encaixe": "A", "motorista": 16, "carona": 16 },
+{ "marca": "Volkswagen", "modelo": "Saveiro", "ano": "1998-2009", "encaixe": "A", "motorista": 20, "carona": 20 },
+{ "marca": "Volkswagen", "modelo": "Saveiro", "ano": "2010-→", "encaixe": "A", "motorista": 20, "carona": 16 },
+{ "marca": "Volkswagen", "modelo": "SaveiroG7", "ano": "2013-→", "encaixe": "G", "motorista": 22, "carona": 16 },
+{ "marca": "Volkswagen", "modelo": "Space Fox", "ano": "2013-→", "encaixe": "G", "motorista": 22, "carona": 14 },
+{ "marca": "Volkswagen", "modelo": "T-Cross", "ano": "2019-→", "encaixe": "G", "motorista": 24, "carona": 18 },
+{ "marca": "Volkswagen", "modelo": "Taos", "ano": "2021-→", "encaixe": "G", "motorista": 26, "carona": 18 },
+{ "marca": "Volkswagen", "modelo": "Tiguan", "ano": "2010-2017", "encaixe": "F", "motorista": 24, "carona": 20 },
+{ "marca": "Volkswagen", "modelo": "Tiguan Allspace", "ano": "2018-→", "encaixe": "G", "motorista": 24, "carona": 20 },
+{ "marca": "Volkswagen", "modelo": "Up", "ano": "2014-→", "encaixe": "G", "motorista": 22, "carona": 16 },
+{ "marca": "Volkswagen", "modelo": "Variant", "ano": "1974-1983", "encaixe": "A", "motorista": 18, "carona": 18 },
+{ "marca": "Volkswagen", "modelo": "Virtus", "ano": "2018-→", "encaixe": "G", "motorista": 26, "carona": 18 },
+{ "marca": "Volkswagen", "modelo": "Voyage", "ano": "1982-1993", "encaixe": "A", "motorista": 16, "carona": 16 },
+{ "marca": "Volkswagen", "modelo": "Voyage", "ano": "1994-1995", "encaixe": "A", "motorista": 16, "carona": 16 },
+{ "marca": "Volkswagen", "modelo": "Voyage", "ano": "2009-2012", "encaixe": "A", "motorista": 22, "carona": 16 },
+{ "marca": "Volkswagen", "modelo": "Voyage", "ano": "2013-→", "encaixe": "G", "motorista": 22, "carona": 16 },
+{ "marca": "Volkswagen", "modelo": "Voyage", "ano": "2017-→", "encaixe": "A", "motorista": 22, "carona": 16 },
+{ "marca": "Volvo", "modelo": "C30", "ano": "2008-2012", "encaixe": "F", "motorista": 26, "carona": 20 },
+{ "marca": "Volvo", "modelo": "C40", "ano": "2022-→", "encaixe": "G", "motorista": 24, "carona": 18 },
+{ "marca": "Volvo", "modelo": "S60", "ano": "2010-→", "encaixe": "F", "motorista": 26, "carona": 20 },
+{ "marca": "Volvo", "modelo": "V40", "ano": "2014-→", "encaixe": "F", "motorista": 26, "carona": 18 },
+{ "marca": "Volvo", "modelo": "V60", "ano": "2014-2017", "encaixe": "F", "motorista": 26, "carona": 20 },
+{ "marca": "Volvo", "modelo": "XC40", "ano": "2018-→", "encaixe": "G", "motorista": 24, "carona": 18 },
+{ "marca": "Volvo", "modelo": "XC60", "ano": "2008-2016", "encaixe": "F", "motorista": 26, "carona": 20 },
+{ "marca": "Volvo", "modelo": "XC90", "ano": "2008-2015", "encaixe": "F", "motorista": 24, "carona": 22 },
+{ "marca": "Volvo", "modelo": "XC90", "ano": "2016-→", "encaixe": "G", "motorista": 24, "carona": 18 },
+
+
+
+
+
+
+
+
+		
+
+
+        // Adicione todas as demais especificações no mesmo formato
+    ];
+
+    function filtrarModelos() {
+        const marca = document.getElementById("marca").value;
+        const modeloSelect = document.getElementById("modelo");
+        modeloSelect.innerHTML = '<option value="">Selecione o Modelo</option>';
+
+        const modelosFiltrados = Array.from(new Set(especificacoes
+            .filter(item => item.marca === marca)
+            .map(item => item.modelo)));
+
+        modelosFiltrados.forEach(modelo => {
+            const option = document.createElement("option");
+            option.value = modelo;
+            option.textContent = modelo;
+            modeloSelect.appendChild(option);
+        });
+    }
+
+    function filtrarAnos() {
+        const marca = document.getElementById("marca").value;
+        const modelo = document.getElementById("modelo").value;
+        const anoSelect = document.getElementById("ano");
+        anoSelect.innerHTML = '<option value="">Selecione o Ano</option>';
+
+        const anosFiltrados = Array.from(new Set(especificacoes
+            .filter(item => item.marca === marca && item.modelo === modelo)
+            .map(item => item.ano)));
+
+        anosFiltrados.forEach(ano => {
+            const option = document.createElement("option");
+            option.value = ano;
+            option.textContent = ano;
+            anoSelect.appendChild(option);
+        });
+    }
+
+    function filtrarEspecificacoes() {
+        const marca = document.getElementById("marca").value;
+        const modelo = document.getElementById("modelo").value;
+        const ano = document.getElementById("ano").value;
+
+        const resultado = especificacoes.find(item => 
+            item.marca === marca &&
+            item.modelo === modelo &&
+            item.ano === ano
+        );
+
+        const resultadoContainer = document.getElementById("resultado");
+        if (resultado) {
+            resultadoContainer.innerHTML = `
+                <p>Você deve comprar o Encaixe: ${resultado.encaixe}</p>
+                <p>Lado Motorista: ${resultado.motorista}</p>
+                <p>Lado Carona Carona: ${resultado.carona}</p>
+            `;
+        } else {
+            resultadoContainer.textContent = "Nenhuma especificação encontrada para os filtros aplicados.";
+        }
+    }
+
+    document.getElementById("marca").addEventListener("change", filtrarModelos);
+    document.getElementById("modelo").addEventListener("change", filtrarAnos);
+</script>
+
+</body>
+</html>
